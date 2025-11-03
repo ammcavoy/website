@@ -62,6 +62,32 @@
         "adventures/14er-antero/photo-3.jpeg",
         "adventures/14er-antero/photo-4.jpeg"
       ]
+    },
+    {
+      "id": "imogene-pass2025",
+      "title": "Imogene Pass Race",
+      "category": "day-hikes",
+      "date": "2025-09-06",
+      "description": "One of the toughest things I've ever done. Really pretty place to be, running uphill somehow made it more beautiful.",
+      "coverPhoto": "adventures/imogene-pass2025/cover.jpeg",
+      "gpxFiles": [
+        {
+          "url": "adventures/imogene-pass2025/route-1762154028210-0.gpx",
+          "label": "Route",
+          "type": "route"
+        }
+      ],
+      "photos": [
+        "adventures/imogene-pass2025/cover.jpeg",
+        "adventures/imogene-pass2025/photo-1.jpeg",
+        "adventures/imogene-pass2025/photo-2.jpeg",
+        "adventures/imogene-pass2025/photo-3.jpeg",
+        "adventures/imogene-pass2025/photo-4.jpeg",
+        "adventures/imogene-pass2025/photo-5.jpeg",
+        "adventures/imogene-pass2025/photo-6.jpeg",
+        "adventures/imogene-pass2025/photo-7.jpeg",
+        "adventures/imogene-pass2025/photo-8.jpeg"
+      ]
     }
   ]
 }

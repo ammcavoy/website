@@ -6,7 +6,16 @@ async function loadAdventures() {
     try {
         const response = await fetch('adventures/adventures.json');
         const data = await response.json();
-        adventuresData = data.adventures;
+
+        // Sort adventures by date (most recent first)
+        adventuresData = data.adventures.sort((a, b) => {
+            // Get the date to compare - use startDate if it exists, otherwise use date
+            const dateA = new Date(a.startDate || a.date);
+            const dateB = new Date(b.startDate || b.date);
+            // Sort in descending order (most recent first)
+            return dateB - dateA;
+        });
+
         displayAdventures();
     } catch (error) {
         console.error('Error loading adventures:', error);

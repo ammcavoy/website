@@ -40,6 +40,28 @@
         "adventures/indian-peaks2025/photo-12.jpeg",
         "adventures/indian-peaks2025/photo-13.jpeg"
       ]
+    },
+    {
+      "id": "14er-antero",
+      "title": "Mount Antero",
+      "category": "day-hikes",
+      "date": "2025-09-01",
+      "description": "Did some car camping, saw a pretty sun rise, and most importantly enjoyed a cig at the summit. God bless.",
+      "coverPhoto": "adventures/14er-antero/cover.jpeg",
+      "gpxFiles": [
+        {
+          "url": "adventures/14er-antero/route-1762153816011-0.gpx",
+          "label": "Route",
+          "type": "route"
+        }
+      ],
+      "photos": [
+        "adventures/14er-antero/cover.jpeg",
+        "adventures/14er-antero/photo-1.jpeg",
+        "adventures/14er-antero/photo-2.jpeg",
+        "adventures/14er-antero/photo-3.jpeg",
+        "adventures/14er-antero/photo-4.jpeg"
+      ]
     }
   ]
 }

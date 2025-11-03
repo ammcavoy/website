@@ -1,4 +1,11 @@
 WEBSITE
 figure out what needs to be cleaned up
- - Title aspect
  - The profile pictures display
+ - Make the home / adventure tab selects change color based on location in the site.
+ - get HTTPS working for the site
+ Adventure tab
+ - Make the adventure type multi select
+ - Add the ability to link and maybe even view youtube videos in the site.
+ - Add 14er, backpacking, and race to the adventure type
+ - Make adventure tab cover photo with the ability to select what adventure type to scroll
+ - figure out the lag when closing the big view picture

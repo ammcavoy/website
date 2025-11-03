@@ -79,9 +79,11 @@ body {
 }
 
 .tagline {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
     font-weight: 300;
+    text-align: center;
+    color: var(--text-color);
 }
 
 .subtitle {
@@ -201,7 +203,7 @@ body {
 
 .adventures-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
     margin-top: 2rem;
 }
@@ -222,13 +224,13 @@ body {
 
 .adventure-cover-photo {
     width: 100%;
-    height: 350px;
+    height: 500px;
     object-fit: cover;
 }
 
 .adventure-map {
     width: 100%;
-    height: 350px;
+    height: 500px;
 }
 
 .card-content {
@@ -351,8 +353,10 @@ body {
 
 .modal-header-image {
     width: 100%;
-    height: 400px;
-    object-fit: cover;
+    height: auto;
+    max-height: 600px;
+    object-fit: contain;
+    background-color: #000;
 }
 
 .modal-body {

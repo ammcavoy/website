@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adam McAvoy - Software Engineer & Outdoor Enthusiast</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Leaflet CSS for maps -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
     <nav class="navbar">
@@ -14,24 +12,16 @@
             <div class="nav-brand">Adam McAvoy</div>
             <ul class="nav-menu">
                 <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#adventures">Adventures</a></li>
+                <li><a href="adventures.html">Adventures</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
     </nav>
 
-    <section id="home" class="hero">
+    <section id="home" class="about">
         <div class="container">
-            <h1>Adam McAvoy</h1>
+            <h2>Adam McAvoy</h2>
             <p class="tagline">Software Engineer | Outdoor Adventurer | Explorer</p>
-            <p class="subtitle">Crafting code by day, exploring the wilderness by weekend</p>
-        </div>
-    </section>
-
-    <section id="about" class="about">
-        <div class="container">
-            <h2>About Me</h2>
             <div class="profile-images">
                 <div class="profile-image">
                     <img src="photos/IMG_1583.JPG" alt="Adam McAvoy">
@@ -66,20 +56,6 @@
         </div>
     </section>
 
-    <section id="adventures" class="adventures">
-        <div class="container">
-            <h2>Outdoor Adventures</h2>
-            <p class="section-intro">
-                Living in Colorado provides endless opportunities for outdoor exploration.
-                Here are some of my recent adventures in the mountains, on the trails, and beyond.
-            </p>
-            <div id="adventures-grid" class="adventures-grid">
-                <!-- Adventures will be loaded dynamically from adventures.json -->
-                <div class="loading-message">Loading adventures...</div>
-            </div>
-        </div>
-    </section>
-
     <section id="contact" class="contact">
         <div class="container">
             <h2>Get In Touch</h2>
@@ -102,12 +78,5 @@
             <p>&copy; 2025 <a href="admin.html" style="color: inherit; text-decoration: none; cursor: default;">Adam McAvoy</a>. All rights reserved.</p>
         </div>
     </footer>
-
-    <!-- Leaflet JS for maps -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- GPX parsing plugin for Leaflet -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
-    <!-- Main adventure loading script -->
-    <script src="adventures.js"></script>
 </body>
 </html>

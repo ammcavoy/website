@@ -194,16 +194,24 @@ document.getElementById('adventure-form').addEventListener('submit', async funct
     }
 
     // Generate the adventure object
+    const coverPhotoPath = `adventures/${id}/${getPhotoFileName(selectedPhotos[coverPhotoIndex], coverPhotoIndex, true)}`;
+
+    // Build photos array with cover photo first, then other photos
+    const photosArray = selectedPhotos.map((photo, index) => {
+        if (index === coverPhotoIndex) {
+            return coverPhotoPath; // Use cover.ext naming for the cover photo
+        }
+        return `adventures/${id}/${getPhotoFileName(photo, index)}`;
+    });
+
     const adventure = {
         id: id,
         title: title,
         date: date,
         description: description,
-        coverPhoto: `adventures/${id}/${getPhotoFileName(selectedPhotos[coverPhotoIndex], coverPhotoIndex, true)}`,
+        coverPhoto: coverPhotoPath,
         gpxFile: `adventures/${id}/route.gpx`,
-        photos: selectedPhotos.map((photo, index) =>
-            `adventures/${id}/${getPhotoFileName(photo, index)}`
-        )
+        photos: photosArray
     };
 
     try {

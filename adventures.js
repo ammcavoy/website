@@ -58,7 +58,6 @@ function createAdventureCard(adventure, index) {
         <div class="card-content">
             <h3>${adventure.title}</h3>
             <div class="adventure-date">${formattedDate}</div>
-            <div class="adventure-description">${truncateText(adventure.description, 120)}</div>
         </div>
     `;
 
@@ -121,8 +120,8 @@ function openAdventureModal(adventure) {
         photosHtml = `
             <div class="modal-photos">
                 <h3>Photos</h3>
-                ${adventure.photos.map(photo =>
-                    `<img src="${photo}" alt="${adventure.title}" class="modal-photo" onclick="window.open('${photo}', '_blank')">`
+                ${adventure.photos.map((photo, index) =>
+                    `<img src="${photo}" alt="${adventure.title}" class="modal-photo">`
                 ).join('')}
             </div>
         `;
@@ -130,12 +129,12 @@ function openAdventureModal(adventure) {
 
     modal.querySelector('.modal-content').innerHTML = `
         <button class="modal-close" onclick="closeAdventureModal()">&times;</button>
-        ${adventure.coverPhoto ? `<img src="${adventure.coverPhoto}" alt="${adventure.title}" class="modal-header-image">` : ''}
+        ${adventure.coverPhoto ? `<img src="${adventure.coverPhoto}" alt="${adventure.title}" class="modal-header-image" id="modal-header-image">` : ''}
         <div class="modal-body">
             <h2 class="modal-title">${adventure.title}</h2>
             <div class="modal-date">${formattedDate}</div>
             <div class="modal-description">${adventure.description}</div>
-            ${adventure.gpxFile ? '<div id="modal-map" class="modal-map"></div>' : ''}
+            ${getGpxFiles(adventure).length > 0 ? '<div id="modal-map" class="modal-map"></div>' : ''}
             ${photosHtml}
         </div>
     `;
@@ -143,9 +142,26 @@ function openAdventureModal(adventure) {
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 
-    // Initialize map if GPX file exists
-    if (adventure.gpxFile) {
-        setTimeout(() => initModalMap(adventure.gpxFile), 100);
+    // Make header image clickable
+    if (adventure.coverPhoto && adventure.photos) {
+        const headerImg = document.getElementById('modal-header-image');
+        const coverIndex = adventure.photos.indexOf(adventure.coverPhoto);
+        if (headerImg) {
+            headerImg.style.cursor = 'pointer';
+            headerImg.onclick = () => openLightbox(adventure.photos, coverIndex >= 0 ? coverIndex : 0);
+        }
+    }
+
+    // Make all gallery photos clickable
+    const galleryPhotos = modal.querySelectorAll('.modal-photo');
+    galleryPhotos.forEach((img, index) => {
+        img.onclick = () => openLightbox(adventure.photos, index);
+    });
+
+    // Initialize map if GPX files exist
+    const gpxFilesToMap = getGpxFiles(adventure);
+    if (gpxFilesToMap.length > 0) {
+        setTimeout(() => initModalMap(gpxFilesToMap), 100);
     }
 }
 
@@ -176,8 +192,8 @@ function createModal() {
     return modal;
 }
 
-// Initialize full-size map in modal
-function initModalMap(gpxFile) {
+// Initialize full-size map in modal with multiple GPX files
+function initModalMap(gpxFiles) {
     const mapElement = document.getElementById('modal-map');
     if (!mapElement) return;
 
@@ -187,22 +203,52 @@ function initModalMap(gpxFile) {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // Load GPX file
-    new L.GPX(gpxFile, {
-        async: true,
-        marker_options: {
-            startIconUrl: 'https://raw.githubusercontent.com/mpetazzoni/leaflet-gpx/master/pin-icon-start.png',
-            endIconUrl: 'https://raw.githubusercontent.com/mpetazzoni/leaflet-gpx/master/pin-icon-end.png',
-            shadowUrl: 'https://raw.githubusercontent.com/mpetazzoni/leaflet-gpx/master/pin-shadow.png'
-        },
-        polyline_options: {
-            color: '#2c5f4f',
-            weight: 4,
-            opacity: 0.8
-        }
-    }).on('loaded', function(e) {
-        map.fitBounds(e.target.getBounds());
-    }).addTo(map);
+    const allBounds = [];
+
+    // Load all GPX files
+    gpxFiles.forEach((gpxFile, index) => {
+        const isWaypoint = gpxFile.type === 'waypoints';
+
+        new L.GPX(gpxFile.url, {
+            async: true,
+            marker_options: isWaypoint ? {
+                startIconUrl: 'https://raw.githubusercontent.com/mpetazzoni/leaflet-gpx/master/pin-icon-wpt.png',
+                endIconUrl: null,
+                shadowUrl: 'https://raw.githubusercontent.com/mpetazzoni/leaflet-gpx/master/pin-shadow.png'
+            } : {
+                startIconUrl: 'https://raw.githubusercontent.com/mpetazzoni/leaflet-gpx/master/pin-icon-start.png',
+                endIconUrl: 'https://raw.githubusercontent.com/mpetazzoni/leaflet-gpx/master/pin-icon-end.png',
+                shadowUrl: 'https://raw.githubusercontent.com/mpetazzoni/leaflet-gpx/master/pin-shadow.png'
+            },
+            polyline_options: {
+                color: isWaypoint ? '#ff6b6b' : '#2c5f4f',
+                weight: isWaypoint ? 2 : 4,
+                opacity: 0.8
+            }
+        }).on('loaded', function(e) {
+            allBounds.push(e.target.getBounds());
+
+            // After last GPX file loads, fit bounds to show all
+            if (allBounds.length === gpxFiles.length) {
+                const bounds = allBounds[0];
+                allBounds.forEach(b => bounds.extend(b));
+                map.fitBounds(bounds);
+            }
+        }).addTo(map);
+    });
+
+    // Add download footer to map
+    const downloadFooter = document.createElement('div');
+    downloadFooter.className = 'map-download-footer';
+    downloadFooter.innerHTML = `
+        <div class="map-download-label">Download:</div>
+        ${gpxFiles.map(gpx => `
+            <button class="map-download-btn" onclick="downloadGpxFile('${gpx.url}', '${gpx.name}')">
+                ⬇ ${gpx.label}
+            </button>
+        `).join('')}
+    `;
+    mapElement.appendChild(downloadFooter);
 }
 
 // Display message when no adventures are available
@@ -215,6 +261,142 @@ function displayNoAdventures() {
 function truncateText(text, maxLength) {
     if (text.length <= maxLength) return text;
     return text.substr(0, maxLength) + '...';
+}
+
+// Lightbox functionality
+let currentLightboxImages = [];
+let currentLightboxIndex = 0;
+
+function openLightbox(images, index) {
+    currentLightboxImages = images;
+    currentLightboxIndex = index;
+
+    // Create lightbox if it doesn't exist
+    let lightbox = document.getElementById('lightbox');
+    if (!lightbox) {
+        lightbox = createLightbox();
+        document.body.appendChild(lightbox);
+    }
+
+    showLightboxImage();
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    if (lightbox) {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function nextLightboxImage() {
+    currentLightboxIndex = (currentLightboxIndex + 1) % currentLightboxImages.length;
+    showLightboxImage();
+}
+
+function prevLightboxImage() {
+    currentLightboxIndex = (currentLightboxIndex - 1 + currentLightboxImages.length) % currentLightboxImages.length;
+    showLightboxImage();
+}
+
+function showLightboxImage() {
+    const img = document.getElementById('lightbox-image');
+    const counter = document.getElementById('lightbox-counter');
+
+    img.src = currentLightboxImages[currentLightboxIndex];
+    counter.textContent = `${currentLightboxIndex + 1} / ${currentLightboxImages.length}`;
+}
+
+function createLightbox() {
+    const lightbox = document.createElement('div');
+    lightbox.id = 'lightbox';
+    lightbox.className = 'lightbox';
+
+    lightbox.innerHTML = `
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <button class="lightbox-nav prev" onclick="prevLightboxImage()">‹</button>
+        <button class="lightbox-nav next" onclick="nextLightboxImage()">›</button>
+        <div class="lightbox-content">
+            <img id="lightbox-image" class="lightbox-image" src="" alt="">
+        </div>
+        <div id="lightbox-counter" class="lightbox-counter"></div>
+    `;
+
+    // Close on background click
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) {
+            closeLightbox();
+        }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('active')) return;
+
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') prevLightboxImage();
+        if (e.key === 'ArrowRight') nextLightboxImage();
+    });
+
+    return lightbox;
+}
+
+// Get GPX files from adventure object (supports both old and new format)
+function getGpxFiles(adventure) {
+    const gpxFiles = [];
+
+    // New format: gpxFiles array
+    if (adventure.gpxFiles && Array.isArray(adventure.gpxFiles)) {
+        return adventure.gpxFiles.map(gpx => ({
+            url: gpx.url || gpx.file,
+            name: gpx.name || gpx.url.split('/').pop(),
+            label: gpx.label || gpx.name || 'Download GPX',
+            type: gpx.type || 'route'
+        }));
+    }
+
+    // Old format: single gpxFile (backward compatibility)
+    if (adventure.gpxFile) {
+        gpxFiles.push({
+            url: adventure.gpxFile,
+            name: `${adventure.id}-route.gpx`,
+            label: 'Route',
+            type: 'route'
+        });
+    }
+
+    // Check for waypoints file
+    if (adventure.waypointsFile) {
+        gpxFiles.push({
+            url: adventure.waypointsFile,
+            name: `${adventure.id}-waypoints.gpx`,
+            label: 'Waypoints',
+            type: 'waypoints'
+        });
+    }
+
+    return gpxFiles;
+}
+
+// Download GPX file
+function downloadGpxFile(url, filename) {
+    fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        })
+        .catch(error => {
+            console.error('Download failed:', error);
+            alert('Failed to download GPX file. Please try again.');
+        });
 }
 
 // Load adventures when page loads

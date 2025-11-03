@@ -222,29 +222,29 @@ body {
 
 .adventure-cover-photo {
     width: 100%;
-    height: 250px;
+    height: 350px;
     object-fit: cover;
 }
 
 .adventure-map {
     width: 100%;
-    height: 250px;
+    height: 350px;
 }
 
 .card-content {
-    padding: 1.5rem;
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
 }
 
 .card-content h3 {
     color: var(--primary-color);
-    margin-bottom: 0.5rem;
-    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+    font-size: 1.3rem;
 }
 
 .adventure-date {
     color: #888;
-    font-size: 0.9rem;
-    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+    margin-bottom: 0;
 }
 
 .adventure-description {
@@ -369,6 +369,43 @@ body {
     margin-bottom: 2rem;
     border-radius: 8px;
     overflow: hidden;
+    position: relative;
+}
+
+.map-download-footer {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 1000;
+}
+
+.map-download-label {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.map-download-btn {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.3s ease;
+}
+
+.map-download-btn:hover {
+    background-color: var(--secondary-color);
 }
 
 .modal-photos {
@@ -395,6 +432,103 @@ body {
 
 .modal-photo:hover {
     transform: scale(1.05);
+}
+
+/* Lightbox for full-size image viewing */
+.lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+.lightbox-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-image {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    color: #333;
+}
+
+.lightbox-close:hover {
+    background-color: white;
+}
+
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    z-index: 10001;
+}
+
+.lightbox-nav:hover {
+    background-color: white;
+}
+
+.lightbox-nav.prev {
+    left: 20px;
+}
+
+.lightbox-nav.next {
+    right: 20px;
+}
+
+.lightbox-counter {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: #333;
 }
 
 /* Contact Section */

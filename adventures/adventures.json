@@ -159,6 +159,29 @@
         "adventures/sherman14er2025/photo-4.jpeg",
         "adventures/sherman14er2025/photo-5.jpeg"
       ]
+    },
+    {
+      "id": "lincoln-ski-14er2025",
+      "title": "Mount Lincoln",
+      "category": "backcountry-lines",
+      "date": "2025-04-26",
+      "description": "Maria and I slept in the car and rose with the sun. Had a lovely first couple miles of the accent getting to watch the sun rise while in the clouds was beautiful. We got a little lost on the way up and ended up losing a lot of time climbing over rocks. We were hours behind schedule and exhausted and turned around early. The ski down was a silly ski with several rock band crossings. Always sad turning around before reaching the goal, but a really fun day in the mountains with Maria regardless.",
+      "coverPhoto": "adventures/lincoln-ski-14er2025/cover.jpeg",
+      "gpxFiles": [
+        {
+          "url": "adventures/lincoln-ski-14er2025/route-1762200838734-0.gpx",
+          "label": "Route",
+          "type": "route"
+        }
+      ],
+      "photos": [
+        "adventures/lincoln-ski-14er2025/cover.jpeg",
+        "adventures/lincoln-ski-14er2025/photo-1.jpeg",
+        "adventures/lincoln-ski-14er2025/photo-2.jpeg",
+        "adventures/lincoln-ski-14er2025/photo-3.jpeg",
+        "adventures/lincoln-ski-14er2025/photo-4.jpeg",
+        "adventures/lincoln-ski-14er2025/photo-5.jpeg"
+      ]
     }
   ]
 }

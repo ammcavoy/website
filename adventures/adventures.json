@@ -1,3 +1,27 @@
 {
-  "adventures": []
+  "adventures": [
+    {
+      "id": "indian-peaks2025",
+      "title": "Indian Peaks Wilderness",
+      "date": "2025-09-12",
+      "description": "test upload",
+      "coverPhoto": "adventures/indian-peaks2025/cover.jpeg",
+      "gpxFile": "adventures/indian-peaks2025/route.gpx",
+      "photos": [
+        "adventures/indian-peaks2025/photo-1.jpeg",
+        "adventures/indian-peaks2025/photo-2.jpeg",
+        "adventures/indian-peaks2025/photo-3.jpeg",
+        "adventures/indian-peaks2025/photo-4.jpeg",
+        "adventures/indian-peaks2025/photo-5.jpeg",
+        "adventures/indian-peaks2025/photo-6.jpeg",
+        "adventures/indian-peaks2025/photo-7.jpeg",
+        "adventures/indian-peaks2025/photo-8.jpeg",
+        "adventures/indian-peaks2025/photo-9.jpeg",
+        "adventures/indian-peaks2025/photo-10.jpeg",
+        "adventures/indian-peaks2025/photo-11.jpeg",
+        "adventures/indian-peaks2025/photo-12.jpeg",
+        "adventures/indian-peaks2025/photo-13.jpeg"
+      ]
+    }
+  ]
 }

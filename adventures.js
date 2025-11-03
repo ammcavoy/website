@@ -126,13 +126,24 @@ function openAdventureModal(adventure) {
         document.body.appendChild(modal);
     }
 
-    // Format date
-    const date = new Date(adventure.date);
-    const formattedDate = date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+    // Format date(s)
+    let formattedDate;
+    if (adventure.startDate && adventure.endDate) {
+        const start = new Date(adventure.startDate);
+        const end = new Date(adventure.endDate);
+        const startStr = start.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+        const endStr = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        formattedDate = `${startStr} - ${endStr}`;
+    } else if (adventure.date) {
+        const date = new Date(adventure.date);
+        formattedDate = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } else {
+        formattedDate = 'Date TBD';
+    }
 
     // Build photos HTML
     let photosHtml = '';
@@ -217,56 +228,108 @@ function initModalMap(gpxFiles) {
     const mapElement = document.getElementById('modal-map');
     if (!mapElement) return;
 
+    console.log('Initializing modal map with', gpxFiles.length, 'GPX files:', gpxFiles);
+
     const map = L.map('modal-map').setView([39.5, -105.5], 10);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    const allBounds = [];
+    const allBounds = L.latLngBounds();
+    let loadedCount = 0;
 
     // Load all GPX files
     gpxFiles.forEach((gpxFile, index) => {
         const isWaypoint = gpxFile.type === 'waypoints';
 
-        new L.GPX(gpxFile.url, {
-            async: true,
-            marker_options: isWaypoint ? {
-                startIconUrl: 'https://raw.githubusercontent.com/mpetazzoni/leaflet-gpx/master/pin-icon-wpt.png',
-                endIconUrl: null,
-                shadowUrl: 'https://raw.githubusercontent.com/mpetazzoni/leaflet-gpx/master/pin-shadow.png'
-            } : {
-                startIconUrl: 'https://raw.githubusercontent.com/mpetazzoni/leaflet-gpx/master/pin-icon-start.png',
-                endIconUrl: 'https://raw.githubusercontent.com/mpetazzoni/leaflet-gpx/master/pin-icon-end.png',
-                shadowUrl: 'https://raw.githubusercontent.com/mpetazzoni/leaflet-gpx/master/pin-shadow.png'
-            },
-            polyline_options: {
-                color: isWaypoint ? '#ff6b6b' : '#2c5f4f',
-                weight: isWaypoint ? 2 : 4,
-                opacity: 0.8
-            }
-        }).on('loaded', function(e) {
-            allBounds.push(e.target.getBounds());
+        // For waypoint-only files, manually parse and add markers
+        if (isWaypoint) {
+            console.log('Loading waypoint file:', gpxFile.url);
+            fetch(gpxFile.url)
+                .then(response => response.text())
+                .then(gpxText => {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(gpxText, 'text/xml');
+                    const waypoints = xmlDoc.getElementsByTagName('wpt');
 
-            // After last GPX file loads, fit bounds to show all
-            if (allBounds.length === gpxFiles.length) {
-                const bounds = allBounds[0];
-                allBounds.forEach(b => bounds.extend(b));
-                map.fitBounds(bounds);
-            }
-        }).addTo(map);
+                    console.log('Found', waypoints.length, 'waypoints in', gpxFile.url);
+
+                    Array.from(waypoints).forEach(wpt => {
+                        const lat = parseFloat(wpt.getAttribute('lat'));
+                        const lon = parseFloat(wpt.getAttribute('lon'));
+                        const nameElement = wpt.getElementsByTagName('name')[0];
+                        const name = nameElement ? nameElement.textContent : 'Waypoint';
+
+                        console.log('Adding waypoint marker:', name, 'at', lat, lon);
+
+                        const marker = L.marker([lat, lon], {
+                            icon: L.divIcon({
+                                className: 'custom-gpx-marker',
+                                html: '⛺',
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 30]
+                            })
+                        }).addTo(map);
+
+                        marker.bindPopup(`<strong>${name}</strong>`);
+                        allBounds.extend([lat, lon]);
+                    });
+
+                    loadedCount++;
+                    console.log('Loaded count:', loadedCount, '/', gpxFiles.length);
+                    if (loadedCount === gpxFiles.length && allBounds.isValid()) {
+                        console.log('All files loaded, fitting bounds:', allBounds);
+                        map.fitBounds(allBounds, { padding: [50, 50] });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading waypoint file:', error);
+                    loadedCount++;
+                });
+        } else {
+            // For route/track files, use the GPX plugin
+            const gpxLayer = new L.GPX(gpxFile.url, {
+                async: true,
+                marker_options: {
+                    startIconUrl: '',
+                    endIconUrl: '',
+                    shadowUrl: ''
+                },
+                polyline_options: {
+                    color: '#2c5f4f',
+                    weight: 4,
+                    opacity: 0.8
+                }
+            });
+
+            gpxLayer.on('loaded', function(e) {
+                const bounds = e.target.getBounds();
+                if (bounds.isValid()) {
+                    allBounds.extend(bounds);
+                }
+
+                loadedCount++;
+                if (loadedCount === gpxFiles.length && allBounds.isValid()) {
+                    map.fitBounds(allBounds, { padding: [50, 50] });
+                }
+            });
+
+            gpxLayer.addTo(map);
+        }
     });
 
     // Add download footer to map
     const downloadFooter = document.createElement('div');
     downloadFooter.className = 'map-download-footer';
+
+    // Store gpxFiles data on the map element for the download function
+    mapElement.dataset.gpxFiles = JSON.stringify(gpxFiles);
+
     downloadFooter.innerHTML = `
-        <div class="map-download-label">Download:</div>
-        ${gpxFiles.map(gpx => `
-            <button class="map-download-btn" onclick="downloadGpxFile('${gpx.url}', '${gpx.name}')">
-                ⬇ ${gpx.label}
-            </button>
-        `).join('')}
+        <button class="map-download-btn" onclick="downloadAllGpxFiles()">
+            ⬇ Download All GPX Files
+        </button>
     `;
     mapElement.appendChild(downloadFooter);
 }
@@ -417,6 +480,21 @@ function downloadGpxFile(url, filename) {
             console.error('Download failed:', error);
             alert('Failed to download GPX file. Please try again.');
         });
+}
+
+// Download all GPX files for the current adventure
+function downloadAllGpxFiles() {
+    const mapElement = document.getElementById('modal-map');
+    if (!mapElement || !mapElement.dataset.gpxFiles) return;
+
+    const gpxFiles = JSON.parse(mapElement.dataset.gpxFiles);
+
+    // Download each file with a small delay between downloads
+    gpxFiles.forEach((gpx, index) => {
+        setTimeout(() => {
+            downloadGpxFile(gpx.url, gpx.name);
+        }, index * 500); // 500ms delay between each download
+    });
 }
 
 // Load adventures when page loads

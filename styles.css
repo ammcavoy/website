@@ -385,6 +385,14 @@ body {
     position: relative;
 }
 
+.custom-gpx-marker {
+    background: none;
+    border: none;
+    font-size: 24px;
+    text-align: center;
+    line-height: 30px;
+}
+
 .map-download-footer {
     position: absolute;
     bottom: 10px;

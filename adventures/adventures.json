@@ -8,7 +8,23 @@
       "endDate": "2025-09-14",
       "description": "test upload",
       "coverPhoto": "adventures/indian-peaks2025/photo-9.jpeg",
-      "gpxFile": "adventures/indian-peaks2025/route.gpx",
+      "gpxFiles": [
+        {
+          "url": "adventures/indian-peaks2025/waypoints-1762151337692-0.gpx",
+          "label": "Waypoints",
+          "type": "waypoints"
+        },
+        {
+          "url": "adventures/indian-peaks2025/waypoints-1762151337896-1.gpx",
+          "label": "Waypoints",
+          "type": "waypoints"
+        },
+        {
+          "url": "adventures/indian-peaks2025/route.gpx",
+          "label": "Route",
+          "type": "route"
+        }
+      ],
       "photos": [
         "adventures/indian-peaks2025/photo-9.jpeg",
         "adventures/indian-peaks2025/cover.jpeg",

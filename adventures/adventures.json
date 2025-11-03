@@ -88,6 +88,30 @@
         "adventures/imogene-pass2025/photo-7.jpeg",
         "adventures/imogene-pass2025/photo-8.jpeg"
       ]
+    },
+    {
+      "id": "decalibron14ers2025",
+      "title": "DeCaLiBron Loop",
+      "category": "day-hikes",
+      "date": "2025-06-14",
+      "description": "Slept in the car with the lovely lad Zach. Woke up and went up, had the honor of summiting 4 14ers in a single day. Lovely making it to the top of Lincoln after the attempt on skis in the spring. Got to see a little goat and some lovely snow covered ridge lines. Overall a nice hike with lovely views.",
+      "coverPhoto": "adventures/decalibron14ers2025/cover.jpeg",
+      "gpxFiles": [
+        {
+          "url": "adventures/decalibron14ers2025/route-1762198640224-0.gpx",
+          "label": "Route",
+          "type": "route"
+        }
+      ],
+      "photos": [
+        "adventures/decalibron14ers2025/cover.jpeg",
+        "adventures/decalibron14ers2025/photo-1.jpeg",
+        "adventures/decalibron14ers2025/photo-2.jpeg",
+        "adventures/decalibron14ers2025/photo-3.jpeg",
+        "adventures/decalibron14ers2025/photo-4.jpeg",
+        "adventures/decalibron14ers2025/photo-5.jpeg",
+        "adventures/decalibron14ers2025/photo-6.jpeg"
+      ]
     }
   ]
 }

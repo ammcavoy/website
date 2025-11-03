@@ -89,13 +89,132 @@
             line-height: 1;
         }
 
-        .cover-photo-selector {
-            margin-top: 1rem;
+        .edit-mode-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
         }
 
-        .cover-photo-selector label {
+        .mode-btn {
+            padding: 0.75rem 2rem;
+            border: 2px solid var(--primary-color);
+            background-color: white;
+            color: var(--primary-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .mode-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .mode-btn:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: white;
+        }
+
+        .photo-grid {
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .photo-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .photo-item.cover {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(255, 0, 0, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            z-index: 10;
+        }
+
+        .photo-item .cover-badge {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .cover-photo-grid {
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .gpx-file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem;
+            background-color: var(--light-color);
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .gpx-file-name {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             font-size: 0.9rem;
-            font-weight: normal;
+        }
+
+        .gpx-file-icon {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .gpx-remove-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .gpx-remove-btn:hover {
+            background-color: #c82333;
         }
 
         .submit-btn {
@@ -309,6 +428,20 @@
             </ol>
         </div>
 
+        <div class="edit-mode-selector">
+            <button type="button" class="mode-btn active" onclick="switchMode('create')">Create New</button>
+            <button type="button" class="mode-btn" onclick="switchMode('edit')">Edit Existing</button>
+        </div>
+
+        <div id="edit-adventure-selector" style="display: none;">
+            <div class="form-group">
+                <label for="existing-adventures">Select Adventure to Edit</label>
+                <select id="existing-adventures" onchange="loadAdventureForEdit()">
+                    <option value="">-- Choose an adventure --</option>
+                </select>
+            </div>
+        </div>
+
         <form id="adventure-form">
             <div class="form-group">
                 <label for="adventure-id">Adventure ID *</label>
@@ -322,8 +455,27 @@
             </div>
 
             <div class="form-group">
+                <label for="adventure-category">Category *</label>
+                <select id="adventure-category" required onchange="updateDateFields()">
+                    <option value="">-- Select a category --</option>
+                    <option value="day-hikes">Day Hikes</option>
+                    <option value="camping">Camping</option>
+                    <option value="backcountry-lines">Backcountry Lines</option>
+                    <option value="hut-trips">Hut Trips</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="single-date-group">
                 <label for="adventure-date">Date *</label>
-                <input type="date" id="adventure-date" required>
+                <input type="date" id="adventure-date">
+            </div>
+
+            <div class="form-group" id="date-range-group" style="display: none;">
+                <label for="adventure-start-date">Start Date *</label>
+                <input type="date" id="adventure-start-date">
+                <label for="adventure-end-date" style="margin-top: 0.5rem;">End Date *</label>
+                <input type="date" id="adventure-end-date">
             </div>
 
             <div class="form-group">
@@ -332,15 +484,24 @@
             </div>
 
             <div class="form-group">
-                <label for="gpx-file">GPX File *</label>
-                <input type="file" id="gpx-file" accept=".gpx" required>
+                <label for="gpx-files">GPX Files</label>
+                <div id="existing-gpx-list" style="margin-bottom: 1rem; display: none;">
+                    <div style="font-weight: 500; margin-bottom: 0.5rem;">Current GPX Files:</div>
+                    <div id="gpx-files-container"></div>
+                </div>
+                <input type="file" id="gpx-files" accept=".gpx" multiple>
+                <small>Upload one or more GPX files (routes and waypoints will be auto-detected)</small>
             </div>
 
             <div class="form-group">
-                <label for="photo-files">Photos *</label>
-                <input type="file" id="photo-files" accept="image/*" multiple required>
-                <div id="photo-preview" class="file-preview"></div>
-                <div id="cover-photo-selector" class="cover-photo-selector"></div>
+                <label for="photo-files">Photos <span id="photos-optional">(add more photos or leave empty)</span></label>
+                <input type="file" id="photo-files" accept="image/*" multiple>
+                <div id="photo-preview" class="photo-grid"></div>
+            </div>
+
+            <div class="form-group" id="cover-photo-group" style="display: none;">
+                <label>Select Cover Photo (click on image)</label>
+                <div id="cover-photo-selector" class="cover-photo-grid"></div>
             </div>
 
             <button type="submit" class="submit-btn">Upload Adventure to GitHub</button>

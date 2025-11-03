@@ -235,6 +235,19 @@ body {
     padding: 1rem 1.5rem 1.5rem 1.5rem;
 }
 
+.adventure-category-badge {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
 .card-content h3 {
     color: var(--primary-color);
     margin-bottom: 0.25rem;

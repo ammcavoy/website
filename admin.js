@@ -1,20 +1,34 @@
-// Admin script with GitHub API integration
+// Admin script with GitHub API integration and edit functionality
 let selectedPhotos = [];
+let existingPhotos = []; // For edit mode
 let coverPhotoIndex = 0;
 let githubToken = '';
 let githubConfig = {
-    owner: '', // Will be auto-detected
-    repo: '',  // Will be auto-detected
+    owner: '',
+    repo: '',
     branch: 'main'
 };
+let editMode = false;
+let currentAdventure = null;
+let allAdventures = [];
+let existingGpxFiles = [];
+let newGpxFiles = [];
+let gpxFilesToRemove = [];
 
-// Load saved token from localStorage
+// Load saved token and adventures on page load
 window.addEventListener('DOMContentLoaded', () => {
     const saved = localStorage.getItem('github-token');
     if (saved) {
         githubToken = saved;
         document.getElementById('github-token').value = saved;
         showTokenStatus('Token loaded from browser storage', 'success');
+    }
+
+    githubConfig.owner = localStorage.getItem('github-owner') || '';
+    githubConfig.repo = localStorage.getItem('github-repo') || '';
+
+    if (githubConfig.owner && githubConfig.repo) {
+        loadAdventuresList();
     }
 });
 
@@ -27,7 +41,6 @@ async function saveToken() {
         return;
     }
 
-    // Test the token
     try {
         const response = await fetch('https://api.github.com/user/repos', {
             headers: {
@@ -40,10 +53,6 @@ async function saveToken() {
             throw new Error('Invalid token or insufficient permissions');
         }
 
-        // Try to detect the repo from the current URL
-        const repos = await response.json();
-
-        // Get user info
         const userResponse = await fetch('https://api.github.com/user', {
             headers: {
                 'Authorization': `token ${token}`,
@@ -53,11 +62,9 @@ async function saveToken() {
 
         const user = await userResponse.json();
 
-        // Store token
         githubToken = token;
         localStorage.setItem('github-token', token);
 
-        // Prompt for repo info
         const repoName = prompt('Enter your repository name (e.g., "website"):', 'website');
         if (repoName) {
             githubConfig.owner = user.login;
@@ -66,6 +73,7 @@ async function saveToken() {
             localStorage.setItem('github-repo', repoName);
 
             showTokenStatus(`✓ Connected to ${user.login}/${repoName}`, 'success');
+            loadAdventuresList();
         }
 
     } catch (error) {
@@ -74,14 +82,12 @@ async function saveToken() {
     }
 }
 
-// Show token status message
 function showTokenStatus(message, type) {
     const status = document.getElementById('token-status');
     status.textContent = message;
     status.className = `token-status ${type}`;
 }
 
-// Load GitHub config from localStorage
 function loadGitHubConfig() {
     githubConfig.owner = localStorage.getItem('github-owner') || '';
     githubConfig.repo = localStorage.getItem('github-repo') || '';
@@ -91,75 +97,359 @@ function loadGitHubConfig() {
     }
 }
 
+// Switch between create and edit mode
+function switchMode(mode) {
+    editMode = (mode === 'edit');
+
+    document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+
+    document.getElementById('edit-adventure-selector').style.display = editMode ? 'block' : 'none';
+    document.getElementById('adventure-id').disabled = editMode;
+    document.getElementById('gpx-optional').style.display = editMode ? 'inline' : 'none';
+    document.getElementById('photos-optional').style.display = editMode ? 'inline' : 'none';
+
+    if (!editMode) {
+        resetForm();
+    }
+}
+
+// Load list of existing adventures
+async function loadAdventuresList() {
+    if (!githubToken) return;
+
+    try {
+        const adventuresFile = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/contents/adventures/adventures.json`);
+        const content = atob(adventuresFile.content);
+        const data = JSON.parse(content);
+        allAdventures = data.adventures || [];
+
+        const select = document.getElementById('existing-adventures');
+        select.innerHTML = '<option value="">-- Choose an adventure --</option>';
+
+        allAdventures.forEach((adv, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = adv.title;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading adventures:', error);
+    }
+}
+
+// Load selected adventure for editing
+async function loadAdventureForEdit() {
+    const index = document.getElementById('existing-adventures').value;
+    if (index === '') return;
+
+    currentAdventure = allAdventures[index];
+
+    // Populate form fields
+    document.getElementById('adventure-id').value = currentAdventure.id;
+    document.getElementById('adventure-title').value = currentAdventure.title;
+    document.getElementById('adventure-category').value = currentAdventure.category || 'day-hikes';
+    document.getElementById('adventure-description').value = currentAdventure.description;
+
+    // Handle dates
+    updateDateFields();
+    if (currentAdventure.startDate && currentAdventure.endDate) {
+        document.getElementById('adventure-start-date').value = currentAdventure.startDate;
+        document.getElementById('adventure-end-date').value = currentAdventure.endDate;
+    } else if (currentAdventure.date) {
+        document.getElementById('adventure-date').value = currentAdventure.date;
+    }
+
+    // Load existing photos
+    existingPhotos = currentAdventure.photos || [];
+    const coverPhoto = currentAdventure.coverPhoto;
+    coverPhotoIndex = existingPhotos.indexOf(coverPhoto);
+    if (coverPhotoIndex === -1) coverPhotoIndex = 0;
+
+    // Load existing GPX files
+    existingGpxFiles = [];
+    newGpxFiles = [];
+    gpxFilesToRemove = [];
+
+    if (currentAdventure.gpxFile) {
+        existingGpxFiles.push({
+            url: currentAdventure.gpxFile,
+            label: 'Route',
+            type: 'route'
+        });
+    }
+
+    if (currentAdventure.waypointsFile) {
+        existingGpxFiles.push({
+            url: currentAdventure.waypointsFile,
+            label: 'Waypoints',
+            type: 'waypoints'
+        });
+    }
+
+    if (currentAdventure.gpxFiles && Array.isArray(currentAdventure.gpxFiles)) {
+        existingGpxFiles = currentAdventure.gpxFiles.map(gpx => ({
+            url: gpx.url || gpx.file,
+            label: gpx.label || 'GPS Data',
+            type: gpx.type || 'route'
+        }));
+    }
+
+    displayGpxFiles();
+    displayPhotoGrid();
+}
+
+// Update date fields based on category
+function updateDateFields() {
+    const category = document.getElementById('adventure-category').value;
+    const needsRange = ['camping', 'hut-trips', 'other'].includes(category);
+
+    document.getElementById('single-date-group').style.display = needsRange ? 'none' : 'block';
+    document.getElementById('date-range-group').style.display = needsRange ? 'block' : 'none';
+
+    document.getElementById('adventure-date').required = !needsRange;
+    document.getElementById('adventure-start-date').required = needsRange;
+    document.getElementById('adventure-end-date').required = needsRange;
+}
+
+// Analyze GPX file to determine type
+async function analyzeGpxFile(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const content = e.target.result;
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(content, 'text/xml');
+
+            // Check for waypoints
+            const waypoints = xmlDoc.getElementsByTagName('wpt');
+            const tracks = xmlDoc.getElementsByTagName('trk');
+            const routes = xmlDoc.getElementsByTagName('rte');
+
+            // Determine type based on content
+            let type = 'route';
+            let label = file.name.replace('.gpx', '');
+
+            if (waypoints.length > 0 && tracks.length === 0 && routes.length === 0) {
+                type = 'waypoints';
+                label = label.includes('waypoint') || label.includes('camp') ? label : 'Waypoints';
+            } else if (tracks.length > 0 || routes.length > 0) {
+                type = 'route';
+                label = label.includes('route') || label.includes('track') ? label : 'Route';
+            }
+
+            resolve({ type, label });
+        };
+        reader.readAsText(file);
+    });
+}
+
+// Handle GPX file selection
+document.getElementById('gpx-files').addEventListener('change', async function(e) {
+    const files = Array.from(e.target.files);
+
+    for (const file of files) {
+        const analysis = await analyzeGpxFile(file);
+        newGpxFiles.push({
+            file: file,
+            type: analysis.type,
+            label: analysis.label
+        });
+    }
+
+    displayGpxFiles();
+});
+
+// Display GPX files (both existing and new)
+function displayGpxFiles() {
+    const container = document.getElementById('gpx-files-container');
+    const listDiv = document.getElementById('existing-gpx-list');
+
+    const allGpxFiles = [
+        ...existingGpxFiles.filter(gpx => !gpxFilesToRemove.includes(gpx.url)),
+        ...newGpxFiles
+    ];
+
+    if (allGpxFiles.length === 0) {
+        listDiv.style.display = 'none';
+        return;
+    }
+
+    listDiv.style.display = 'block';
+    container.innerHTML = '';
+
+    // Display existing files
+    existingGpxFiles.forEach((gpx, index) => {
+        if (gpxFilesToRemove.includes(gpx.url)) return;
+
+        const item = document.createElement('div');
+        item.className = 'gpx-file-item';
+
+        const fileName = gpx.url.split('/').pop();
+        const icon = gpx.type === 'waypoints' ? '⛺' : '📍';
+        const typeLabel = gpx.type === 'waypoints' ? 'Waypoints' : 'Route';
+
+        item.innerHTML = `
+            <div class="gpx-file-name">
+                <span class="gpx-file-icon">${icon}</span>
+                <span><strong>${typeLabel}:</strong> ${fileName}</span>
+            </div>
+            <button type="button" class="gpx-remove-btn" onclick="removeExistingGpx('${gpx.url}')">Remove</button>
+        `;
+
+        container.appendChild(item);
+    });
+
+    // Display new files
+    newGpxFiles.forEach((gpx, index) => {
+        const item = document.createElement('div');
+        item.className = 'gpx-file-item';
+
+        const icon = gpx.type === 'waypoints' ? '⛺' : '📍';
+        const typeLabel = gpx.type === 'waypoints' ? 'Waypoints' : 'Route';
+
+        item.innerHTML = `
+            <div class="gpx-file-name">
+                <span class="gpx-file-icon">${icon}</span>
+                <span><strong>${typeLabel}:</strong> ${gpx.file.name} <em style="color: green;">(new)</em></span>
+            </div>
+            <button type="button" class="gpx-remove-btn" onclick="removeNewGpx(${index})">Remove</button>
+        `;
+
+        container.appendChild(item);
+    });
+}
+
+// Remove existing GPX file
+function removeExistingGpx(url) {
+    gpxFilesToRemove.push(url);
+    displayGpxFiles();
+}
+
+// Remove new GPX file
+function removeNewGpx(index) {
+    newGpxFiles.splice(index, 1);
+    displayGpxFiles();
+}
+
+// Setup date range auto-fill
+document.getElementById('adventure-start-date').addEventListener('change', function() {
+    const startDate = this.value;
+    const endDateField = document.getElementById('adventure-end-date');
+
+    if (startDate && !endDateField.value) {
+        // Set end date to start date and set min date
+        endDateField.value = startDate;
+        endDateField.min = startDate;
+
+        // Automatically focus the end date field
+        setTimeout(() => endDateField.focus(), 100);
+    } else if (startDate) {
+        // Just update the min date
+        endDateField.min = startDate;
+    }
+});
+
 // Handle photo file selection
 document.getElementById('photo-files').addEventListener('change', function(e) {
     const files = Array.from(e.target.files);
-    selectedPhotos = files;
+    selectedPhotos = [...selectedPhotos, ...files];
+    displayPhotoGrid();
+});
 
-    // Display preview
+// Display photo grid with click-to-select cover
+function displayPhotoGrid() {
     const preview = document.getElementById('photo-preview');
-    const coverSelector = document.getElementById('cover-photo-selector');
+    const coverGroup = document.getElementById('cover-photo-group');
 
     preview.innerHTML = '';
-    coverSelector.innerHTML = '';
 
-    if (files.length === 0) return;
+    const allPhotos = [...existingPhotos, ...selectedPhotos];
 
-    // Show photo previews
-    files.forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const item = document.createElement('div');
-            item.className = 'file-preview-item';
+    if (allPhotos.length === 0) {
+        coverGroup.style.display = 'none';
+        return;
+    }
+
+    coverGroup.style.display = 'block';
+
+    allPhotos.forEach((photo, index) => {
+        const item = document.createElement('div');
+        item.className = 'photo-item';
+        if (index === coverPhotoIndex) {
+            item.classList.add('cover');
+        }
+
+        const isExisting = index < existingPhotos.length;
+
+        if (isExisting) {
+            // Existing photo from server
             item.innerHTML = `
-                <img src="${e.target.result}" alt="Photo ${index + 1}">
+                <img src="${photo}" alt="Photo ${index + 1}">
                 <button type="button" class="remove-btn" onclick="removePhoto(${index})">&times;</button>
+                ${index === coverPhotoIndex ? '<div class="cover-badge">COVER</div>' : ''}
             `;
-            preview.appendChild(item);
+        } else {
+            // New photo file
+            const fileIndex = index - existingPhotos.length;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                item.innerHTML = `
+                    <img src="${e.target.result}" alt="Photo ${index + 1}">
+                    <button type="button" class="remove-btn" onclick="removePhoto(${index})">&times;</button>
+                    ${index === coverPhotoIndex ? '<div class="cover-badge">COVER</div>' : ''}
+                `;
+            };
+            reader.readAsDataURL(selectedPhotos[fileIndex]);
+        }
+
+        item.onclick = (e) => {
+            if (!e.target.classList.contains('remove-btn')) {
+                setCoverPhoto(index);
+            }
         };
-        reader.readAsDataURL(file);
+
+        preview.appendChild(item);
     });
+}
 
-    // Create cover photo selector
-    coverSelector.innerHTML = '<label>Select Cover Photo:</label><br>';
-    files.forEach((file, index) => {
-        const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = 'cover-photo';
-        radio.value = index;
-        radio.id = `cover-${index}`;
-        radio.checked = index === 0;
-        radio.addEventListener('change', () => {
-            coverPhotoIndex = index;
-        });
-
-        const label = document.createElement('label');
-        label.htmlFor = `cover-${index}`;
-        label.textContent = ` Photo ${index + 1}`;
-        label.style.marginRight = '1rem';
-
-        coverSelector.appendChild(radio);
-        coverSelector.appendChild(label);
-    });
-});
+// Set cover photo
+function setCoverPhoto(index) {
+    coverPhotoIndex = index;
+    displayPhotoGrid();
+}
 
 // Remove photo from selection
 function removePhoto(index) {
-    selectedPhotos.splice(index, 1);
+    const isExisting = index < existingPhotos.length;
 
-    // Trigger change event to update preview
-    const dataTransfer = new DataTransfer();
-    selectedPhotos.forEach(file => dataTransfer.items.add(file));
-    document.getElementById('photo-files').files = dataTransfer.files;
-
-    // Manually trigger the change handler
-    const event = new Event('change');
-    document.getElementById('photo-files').dispatchEvent(event);
+    if (isExisting) {
+        existingPhotos.splice(index, 1);
+    } else {
+        const fileIndex = index - existingPhotos.length;
+        selectedPhotos.splice(fileIndex, 1);
+    }
 
     // Adjust cover photo index if necessary
-    if (coverPhotoIndex >= selectedPhotos.length) {
-        coverPhotoIndex = Math.max(0, selectedPhotos.length - 1);
+    if (coverPhotoIndex >= (existingPhotos.length + selectedPhotos.length)) {
+        coverPhotoIndex = Math.max(0, existingPhotos.length + selectedPhotos.length - 1);
     }
+
+    displayPhotoGrid();
+}
+
+// Reset form
+function resetForm() {
+    document.getElementById('adventure-form').reset();
+    selectedPhotos = [];
+    existingPhotos = [];
+    existingGpxFiles = [];
+    newGpxFiles = [];
+    gpxFilesToRemove = [];
+    coverPhotoIndex = 0;
+    currentAdventure = null;
+    displayPhotoGrid();
+    displayGpxFiles();
 }
 
 // Handle form submission
@@ -173,9 +463,8 @@ document.getElementById('adventure-form').addEventListener('submit', async funct
 
     const id = document.getElementById('adventure-id').value.trim();
     const title = document.getElementById('adventure-title').value.trim();
-    const date = document.getElementById('adventure-date').value;
+    const category = document.getElementById('adventure-category').value;
     const description = document.getElementById('adventure-description').value.trim();
-    const gpxFile = document.getElementById('gpx-file').files[0];
 
     // Validate adventure ID format
     if (!/^[a-z0-9-]+$/.test(id)) {
@@ -183,39 +472,46 @@ document.getElementById('adventure-form').addEventListener('submit', async funct
         return;
     }
 
-    if (selectedPhotos.length === 0) {
+    // Get dates
+    let dateData = {};
+    const needsRange = ['camping', 'hut-trips', 'other'].includes(category);
+    if (needsRange) {
+        dateData.startDate = document.getElementById('adventure-start-date').value;
+        dateData.endDate = document.getElementById('adventure-end-date').value;
+    } else {
+        dateData.date = document.getElementById('adventure-date').value;
+    }
+
+    const allPhotos = [...existingPhotos, ...selectedPhotos];
+
+    if (allPhotos.length === 0 && !editMode) {
         alert('Please select at least one photo');
         return;
     }
 
-    if (!gpxFile) {
-        alert('Please select a GPX file');
+    // Check GPX file requirements
+    const remainingExisting = existingGpxFiles.filter(gpx => !gpxFilesToRemove.includes(gpx.url));
+    const totalGpxFiles = remainingExisting.length + newGpxFiles.length;
+
+    if (totalGpxFiles === 0) {
+        alert('Please upload at least one GPX file');
         return;
     }
 
-    // Generate the adventure object
-    const coverPhotoPath = `adventures/${id}/${getPhotoFileName(selectedPhotos[coverPhotoIndex], coverPhotoIndex, true)}`;
-
-    // Build photos array with cover photo first, then other photos
-    const photosArray = selectedPhotos.map((photo, index) => {
-        if (index === coverPhotoIndex) {
-            return coverPhotoPath; // Use cover.ext naming for the cover photo
-        }
-        return `adventures/${id}/${getPhotoFileName(photo, index)}`;
-    });
-
+    // Build adventure object
     const adventure = {
         id: id,
         title: title,
-        date: date,
+        category: category,
+        ...dateData,
         description: description,
-        coverPhoto: coverPhotoPath,
-        gpxFile: `adventures/${id}/route.gpx`,
-        photos: photosArray
+        coverPhoto: null, // Will be set after determining photo paths
+        gpxFiles: [], // Will be populated during upload
+        photos: []
     };
 
     try {
-        await uploadAdventureToGitHub(adventure, gpxFile, selectedPhotos);
+        await uploadAdventureToGitHub(adventure, newGpxFiles, selectedPhotos, existingPhotos, remainingExisting);
     } catch (error) {
         hideProgress();
         alert(`Upload failed: ${error.message}`);
@@ -223,17 +519,8 @@ document.getElementById('adventure-form').addEventListener('submit', async funct
     }
 });
 
-// Get photo file name
-function getPhotoFileName(file, index, isCover = false) {
-    const extension = file.name.split('.').pop().toLowerCase();
-    if (isCover) {
-        return `cover.${extension}`;
-    }
-    return `photo-${index + 1}.${extension}`;
-}
-
-// Upload adventure to GitHub
-async function uploadAdventureToGitHub(adventure, gpxFile, photos) {
+// Upload adventure to GitHub (handles both create and edit)
+async function uploadAdventureToGitHub(adventure, newGpxFilesList, newPhotos, existingPhotos, remainingGpxFiles) {
     try {
         loadGitHubConfig();
         showProgress('Preparing upload...', 0);
@@ -260,38 +547,113 @@ async function uploadAdventureToGitHub(adventure, gpxFile, photos) {
             console.log('adventures.json not found or empty, starting fresh');
         }
 
-        // Add new adventure
-        adventures.push(adventure);
-        const updatedAdventuresJson = JSON.stringify({ adventures }, null, 2);
-
         // Step 4: Create blobs for all files
-        showProgress('Uploading files...', 40);
         const blobs = [];
+        const gpxFilesArray = [];
 
-        // Upload GPX file
-        const gpxContent = await readFileAsBase64(gpxFile);
-        const gpxBlob = await createBlob(gpxContent);
-        blobs.push({
-            path: `adventures/${adventure.id}/route.gpx`,
-            sha: gpxBlob.sha,
-            mode: '100644',
-            type: 'blob'
+        // Upload new GPX files
+        for (let i = 0; i < newGpxFilesList.length; i++) {
+            const gpxData = newGpxFilesList[i];
+            showProgress(`Uploading GPX file ${i + 1}/${newGpxFilesList.length}...`, 35 + (i / newGpxFilesList.length) * 10);
+
+            const fileName = `${gpxData.type}-${Date.now()}-${i}.gpx`;
+            const gpxPath = `adventures/${adventure.id}/${fileName}`;
+
+            const gpxContent = await readFileAsBase64(gpxData.file);
+            const gpxBlob = await createBlob(gpxContent);
+            blobs.push({
+                path: gpxPath,
+                sha: gpxBlob.sha,
+                mode: '100644',
+                type: 'blob'
+            });
+
+            gpxFilesArray.push({
+                url: gpxPath,
+                label: gpxData.label,
+                type: gpxData.type
+            });
+        }
+
+        // Add remaining existing GPX files
+        remainingGpxFiles.forEach(gpx => {
+            gpxFilesArray.push({
+                url: gpx.url,
+                label: gpx.label,
+                type: gpx.type
+            });
         });
 
-        // Upload photos
-        for (let i = 0; i < photos.length; i++) {
-            const progress = 40 + (i / photos.length) * 30;
-            showProgress(`Uploading photo ${i + 1}/${photos.length}...`, progress);
+        adventure.gpxFiles = gpxFilesArray;
 
-            const photoContent = await readFileAsBase64(photos[i]);
+        let photoNumber = 1;
+
+        // Build photos array and determine cover photo
+        const finalPhotos = [];
+        let coverPhotoPath = '';
+
+        // Upload new photos
+        for (let i = 0; i < newPhotos.length; i++) {
+            const progress = 45 + (i / (newPhotos.length + existingPhotos.length)) * 35;
+            showProgress(`Uploading photo ${i + 1}/${newPhotos.length + existingPhotos.length}...`, progress);
+
+            const photo = newPhotos[i];
+            const extension = photo.name.split('.').pop().toLowerCase();
+            const globalIndex = existingPhotos.length + i;
+
+            let filename;
+            if (globalIndex === coverPhotoIndex) {
+                filename = `cover.${extension}`;
+            } else {
+                filename = `photo-${photoNumber}.${extension}`;
+                photoNumber++;
+            }
+
+            const photoPath = `adventures/${adventure.id}/${filename}`;
+            const photoContent = await readFileAsBase64(photo);
             const photoBlob = await createBlob(photoContent);
             blobs.push({
-                path: `adventures/${adventure.id}/${getPhotoFileName(photos[i], i, i === coverPhotoIndex)}`,
+                path: photoPath,
                 sha: photoBlob.sha,
                 mode: '100644',
                 type: 'blob'
             });
+
+            finalPhotos.push(photoPath);
+            if (globalIndex === coverPhotoIndex) {
+                coverPhotoPath = photoPath;
+            }
         }
+
+        // Add existing photos to final list
+        existingPhotos.forEach((photoPath, i) => {
+            if (i === coverPhotoIndex && !coverPhotoPath) {
+                coverPhotoPath = photoPath;
+            }
+            if (!finalPhotos.includes(photoPath)) {
+                finalPhotos.push(photoPath);
+            }
+        });
+
+        // Reorder to put cover photo first
+        if (coverPhotoPath) {
+            const filtered = finalPhotos.filter(p => p !== coverPhotoPath);
+            finalPhotos.splice(0, finalPhotos.length, coverPhotoPath, ...filtered);
+        }
+
+        adventure.coverPhoto = coverPhotoPath || finalPhotos[0];
+        adventure.photos = finalPhotos;
+
+        // Update or add adventure to list
+        showProgress('Updating adventure list...', 82);
+        const existingIndex = adventures.findIndex(a => a.id === adventure.id);
+        if (existingIndex >= 0) {
+            adventures[existingIndex] = adventure;
+        } else {
+            adventures.push(adventure);
+        }
+
+        const updatedAdventuresJson = JSON.stringify({ adventures }, null, 2);
 
         // Upload updated adventures.json
         const jsonBlob = await createBlob(btoa(updatedAdventuresJson));
@@ -303,7 +665,7 @@ async function uploadAdventureToGitHub(adventure, gpxFile, photos) {
         });
 
         // Step 5: Create new tree
-        showProgress('Creating file tree...', 75);
+        showProgress('Creating file tree...', 85);
         const newTree = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/trees`, {
             method: 'POST',
             body: JSON.stringify({
@@ -313,11 +675,12 @@ async function uploadAdventureToGitHub(adventure, gpxFile, photos) {
         });
 
         // Step 6: Create new commit
-        showProgress('Creating commit...', 85);
+        showProgress('Creating commit...', 90);
+        const commitMessage = editMode ? `Update adventure: ${adventure.title}` : `Add adventure: ${adventure.title}`;
         const newCommit = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/commits`, {
             method: 'POST',
             body: JSON.stringify({
-                message: `Add adventure: ${adventure.title}`,
+                message: commitMessage,
                 tree: newTree.sha,
                 parents: [latestCommitSha]
             })
@@ -426,8 +789,8 @@ function showSuccess(adventure, commitSha) {
     outputSection.scrollIntoView({ behavior: 'smooth' });
 
     // Reset form
-    document.getElementById('adventure-form').reset();
-    selectedPhotos = [];
-    document.getElementById('photo-preview').innerHTML = '';
-    document.getElementById('cover-photo-selector').innerHTML = '';
+    resetForm();
+
+    // Reload adventures list
+    loadAdventuresList();
 }

@@ -45,17 +45,37 @@ function createAdventureCard(adventure, index) {
         mediaHtml = `<div id="map-preview-${index}" class="adventure-map"></div>`;
     }
 
-    // Format date
-    const date = new Date(adventure.date);
-    const formattedDate = date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+    // Format date(s)
+    let formattedDate;
+    if (adventure.startDate && adventure.endDate) {
+        const start = new Date(adventure.startDate);
+        const end = new Date(adventure.endDate);
+        formattedDate = `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+    } else if (adventure.date) {
+        const date = new Date(adventure.date);
+        formattedDate = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } else {
+        formattedDate = 'Date TBD';
+    }
+
+    // Get category label
+    const categoryLabels = {
+        'day-hikes': 'Day Hike',
+        'camping': 'Camping',
+        'backcountry-lines': 'Backcountry',
+        'hut-trips': 'Hut Trip',
+        'other': 'Adventure'
+    };
+    const categoryLabel = categoryLabels[adventure.category] || 'Adventure';
 
     card.innerHTML = `
         ${mediaHtml}
         <div class="card-content">
+            <div class="adventure-category-badge">${categoryLabel}</div>
             <h3>${adventure.title}</h3>
             <div class="adventure-date">${formattedDate}</div>
         </div>

@@ -212,6 +212,7 @@ body {
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
 .adventure-card:hover {
@@ -219,8 +220,19 @@ body {
     box-shadow: 0 8px 12px rgba(0,0,0,0.15);
 }
 
+.adventure-cover-photo {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.adventure-map {
+    width: 100%;
+    height: 250px;
+}
+
 .card-content {
-    padding: 2rem;
+    padding: 1.5rem;
 }
 
 .card-content h3 {
@@ -229,8 +241,160 @@ body {
     font-size: 1.5rem;
 }
 
-.card-content p {
+.adventure-date {
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+.adventure-description {
     color: #666;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.adventure-stats {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.loading-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+    font-style: italic;
+}
+
+.no-adventures {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+}
+
+/* Adventure Detail Modal */
+.adventure-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.adventure-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.modal-content {
+    background-color: var(--white);
+    border-radius: 8px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: var(--white);
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.modal-close:hover {
+    background-color: var(--light-color);
+}
+
+.modal-header-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.modal-title {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.modal-date {
+    color: #888;
+    margin-bottom: 1rem;
+}
+
+.modal-description {
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+}
+
+.modal-map {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.modal-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.modal-photos h3 {
+    grid-column: 1 / -1;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.modal-photo {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.modal-photo:hover {
+    transform: scale(1.05);
 }
 
 /* Contact Section */

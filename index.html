@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adam McAvoy - Software Engineer & Outdoor Enthusiast</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Leaflet CSS for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
     <nav class="navbar">
@@ -69,28 +71,11 @@
             <h2>Outdoor Adventures</h2>
             <p class="section-intro">
                 Living in Colorado provides endless opportunities for outdoor exploration.
-                This section will feature stories, photos, and insights from my adventures in the mountains,
-                on the trails, and beyond.
+                Here are some of my recent adventures in the mountains, on the trails, and beyond.
             </p>
-            <div class="adventures-grid">
-                <div class="adventure-card">
-                    <div class="card-content">
-                        <h3>Hiking</h3>
-                        <p>Exploring Colorado's 14ers and backcountry trails</p>
-                    </div>
-                </div>
-                <div class="adventure-card">
-                    <div class="card-content">
-                        <h3>Camping</h3>
-                        <p>Wilderness camping and backpacking adventures</p>
-                    </div>
-                </div>
-                <div class="adventure-card">
-                    <div class="card-content">
-                        <h3>More to Come</h3>
-                        <p>Stay tuned for trip reports and adventure stories</p>
-                    </div>
-                </div>
+            <div id="adventures-grid" class="adventures-grid">
+                <!-- Adventures will be loaded dynamically from adventures.json -->
+                <div class="loading-message">Loading adventures...</div>
             </div>
         </div>
     </section>
@@ -117,5 +102,12 @@
             <p>&copy; 2025 Adam McAvoy. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Leaflet JS for maps -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- GPX parsing plugin for Leaflet -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
+    <!-- Main adventure loading script -->
+    <script src="adventures.js"></script>
 </body>
 </html>

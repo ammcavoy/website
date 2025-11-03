@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Add Adventure</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-header h1 {
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-group input[type="file"] {
+            padding: 0.5rem;
+        }
+
+        .file-preview {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .file-preview-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .file-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .file-preview-item .remove-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .cover-photo-selector {
+            margin-top: 1rem;
+        }
+
+        .cover-photo-selector label {
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .submit-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .output-section {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: var(--light-color);
+            border-radius: 4px;
+            display: none;
+        }
+
+        .output-section.active {
+            display: block;
+        }
+
+        .output-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .output-section pre {
+            background-color: var(--white);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        .instructions {
+            background-color: #fff3cd;
+            padding: 1.5rem;
+            border-radius: 4px;
+            border-left: 4px solid #ffc107;
+            margin-bottom: 2rem;
+        }
+
+        .instructions h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+
+        .instructions ol {
+            margin-left: 1.5rem;
+        }
+
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+
+        .instructions code {
+            background-color: #f5f5f5;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.9rem;
+        }
+
+        .github-setup {
+            background-color: #d1ecf1;
+            padding: 1.5rem;
+            border-radius: 4px;
+            border-left: 4px solid #0c5460;
+            margin-bottom: 2rem;
+        }
+
+        .github-setup h3 {
+            margin-top: 0;
+            color: #0c5460;
+        }
+
+        .github-setup a {
+            color: #0c5460;
+            font-weight: bold;
+        }
+
+        .token-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .token-input-group input {
+            flex: 1;
+        }
+
+        .token-input-group button {
+            background-color: #0c5460;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .token-input-group button:hover {
+            background-color: #0a4049;
+        }
+
+        .token-status {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .token-status.success {
+            background-color: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .token-status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        .progress-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-overlay.active {
+            display: flex;
+        }
+
+        .progress-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background-color: #f0f0f0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-message {
+            margin-top: 1rem;
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Add New Adventure</h1>
+            <p>Upload adventures directly to GitHub from anywhere</p>
+        </div>
+
+        <div class="github-setup">
+            <h3>GitHub Setup</h3>
+            <p>To upload adventures, you need a GitHub Personal Access Token with 'repo' permissions.</p>
+            <p><a href="https://github.com/settings/tokens/new?scopes=repo&description=Website%20Admin" target="_blank">Click here to create a token</a> (select 'repo' scope)</p>
+            <div class="token-input-group">
+                <input type="password" id="github-token" placeholder="Paste your GitHub token here">
+                <button type="button" onclick="saveToken()">Save Token</button>
+            </div>
+            <div id="token-status" class="token-status"></div>
+        </div>
+
+        <div class="instructions">
+            <h3>How to Add an Adventure</h3>
+            <ol>
+                <li>Set up your GitHub token above (one-time setup)</li>
+                <li>Fill out all the fields below with your adventure details</li>
+                <li>Upload your GPX file from onX</li>
+                <li>Upload photos and select a cover photo</li>
+                <li>Click "Upload Adventure to GitHub" - everything will be committed automatically!</li>
+            </ol>
+        </div>
+
+        <form id="adventure-form">
+            <div class="form-group">
+                <label for="adventure-id">Adventure ID *</label>
+                <input type="text" id="adventure-id" placeholder="e.g., grays-peak-2024" required>
+                <small>Use lowercase letters, numbers, and hyphens only</small>
+            </div>
+
+            <div class="form-group">
+                <label for="adventure-title">Title *</label>
+                <input type="text" id="adventure-title" placeholder="e.g., Grays Peak Summit" required>
+            </div>
+
+            <div class="form-group">
+                <label for="adventure-date">Date *</label>
+                <input type="date" id="adventure-date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="adventure-description">Description *</label>
+                <textarea id="adventure-description" placeholder="Write about your adventure..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="gpx-file">GPX File *</label>
+                <input type="file" id="gpx-file" accept=".gpx" required>
+            </div>
+
+            <div class="form-group">
+                <label for="photo-files">Photos *</label>
+                <input type="file" id="photo-files" accept="image/*" multiple required>
+                <div id="photo-preview" class="file-preview"></div>
+                <div id="cover-photo-selector" class="cover-photo-selector"></div>
+            </div>
+
+            <button type="submit" class="submit-btn">Upload Adventure to GitHub</button>
+        </form>
+
+        <div id="output-section" class="output-section">
+            <h3>Adventure Uploaded Successfully!</h3>
+            <p>Your adventure has been committed to GitHub and will be visible on your website shortly.</p>
+
+            <h4>Adventure Details</h4>
+            <pre id="json-output"></pre>
+
+            <h4>View on GitHub</h4>
+            <p id="github-link"></p>
+        </div>
+    </div>
+
+    <div id="progress-overlay" class="progress-overlay">
+        <div class="progress-content">
+            <h3>Uploading Adventure...</h3>
+            <div class="progress-bar">
+                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+            </div>
+            <div id="progress-message" class="progress-message">Preparing upload...</div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

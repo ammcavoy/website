@@ -1,0 +1,42 @@
+{
+  "tabs": [
+    {
+      "id": "adventures",
+      "label": "Adventures",
+      "dataFile": "adventures/adventures.json",
+      "enabled": true,
+      "subtypes": [
+        {
+          "id": "day-hikes",
+          "label": "Day Hikes",
+          "icon": "🥾"
+        },
+        {
+          "id": "camping",
+          "label": "Camping",
+          "icon": "⛺"
+        },
+        {
+          "id": "backcountry-lines",
+          "label": "Backcountry Lines",
+          "icon": "⛷️"
+        },
+        {
+          "id": "hut-trips",
+          "label": "Hut Trips",
+          "icon": "🏔️"
+        },
+        {
+          "id": "other",
+          "label": "Other",
+          "icon": "🌲"
+        },
+        {
+          "id": "14ers",
+          "label": "14ers",
+          "icon": "🏔️"
+        }
+      ]
+    }
+  ]
+}

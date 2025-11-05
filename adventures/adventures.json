@@ -223,6 +223,48 @@
         "adventures/moab-climbing2025/photo-11.jpeg",
         "adventures/moab-climbing2025/photo-12.jpeg"
       ]
+    },
+    {
+      "id": "bettybearhut2025",
+      "title": "Betty Bear Hut",
+      "category": "hut-trips",
+      "startDate": "2025-01-06",
+      "endDate": "2025-01-08",
+      "description": "A truly incredible hut. The tour in was a lovely snowmobile ride for the first couple miles, and the last mile was an uphill battle from hell with the sled. That last mile is truly something I would never wish upon anyone. Once we arrived we realized that we were on a hut trip in horrible avalanche conditions. We didn't get to ski any of the lines that we wanted to but enjoyed the hut and each other all the same. We drank a lot, smoked a little, and laughed a lot. A hut with incredible views is better with incredible friends.",
+      "coverPhoto": "adventures/bettybearhut2025/cover.jpeg",
+      "gpxFiles": [
+        {
+          "url": "adventures/bettybearhut2025/route-1762321428615-0.gpx",
+          "label": "Route",
+          "type": "route"
+        },
+        {
+          "url": "adventures/bettybearhut2025/route-1762321429022-1.gpx",
+          "label": "Route",
+          "type": "route"
+        },
+        {
+          "url": "adventures/bettybearhut2025/route-1762321429526-2.gpx",
+          "label": "Route",
+          "type": "route"
+        },
+        {
+          "url": "adventures/bettybearhut2025/waypoints-1762321430141-3.gpx",
+          "label": "Waypoints",
+          "type": "waypoints"
+        }
+      ],
+      "photos": [
+        "adventures/bettybearhut2025/cover.jpeg",
+        "adventures/bettybearhut2025/photo-1.jpg",
+        "adventures/bettybearhut2025/photo-2.jpg",
+        "adventures/bettybearhut2025/photo-3.jpg",
+        "adventures/bettybearhut2025/photo-4.jpg",
+        "adventures/bettybearhut2025/photo-5.jpeg",
+        "adventures/bettybearhut2025/photo-6.jpeg",
+        "adventures/bettybearhut2025/photo-7.jpeg",
+        "adventures/bettybearhut2025/photo-8.jpeg"
+      ]
     }
   ]
 }

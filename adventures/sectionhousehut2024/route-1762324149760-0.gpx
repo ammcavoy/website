@@ -1,0 +1,7 @@
+<gpx xmlns:onx="https://wwww.onxmaps.com/" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="onXmaps backcountry web"><metadata/><rte><name xmlns="http://www.topografix.com/GPX/1/1">bald mountain approach</name><desc xmlns="http://www.topografix.com/GPX/1/1">name=bald mountain approach
+notes=
+id=5d81c94e-0b1c-4a15-8545-ae3cfae29235
+type=Line
+color=rgba(255,51,0,1)
+style=solid
+weight=4.0</desc><type>Line</type><extensions><onx:color>rgba(255,51,0,1)</onx:color><onx:style>solid</onx:style><onx:weight>4.0</onx:weight></extensions><rtept lat="39.410984" lon="-105.968077"/><rtept lat="39.413318" lon="-105.968238"/><rtept lat="39.418222" lon="-105.965011"/><rtept lat="39.419658" lon="-105.962501"/><rtept lat="39.423293" lon="-105.957889"/><rtept lat="39.4251" lon="-105.955364"/><rtept lat="39.426573" lon="-105.954915"/><rtept lat="39.428109" lon="-105.956475"/><rtept lat="39.428676" lon="-105.959653"/><rtept lat="39.431268" lon="-105.96275"/><rtept lat="39.432581" lon="-105.964127"/><rtept lat="39.43377" lon="-105.965069"/><rtept lat="39.435818" lon="-105.966319"/><rtept lat="39.43825" lon="-105.966854"/><rtept lat="39.440288" lon="-105.967535"/><rtept lat="39.442107" lon="-105.968253"/><rtept lat="39.443491" lon="-105.969513"/></rte></gpx>

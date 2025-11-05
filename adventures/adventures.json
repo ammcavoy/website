@@ -314,6 +314,50 @@
         "adventures/fourpassloop2024/photo-14.jpeg",
         "adventures/fourpassloop2024/photo-15.jpeg"
       ]
+    },
+    {
+      "id": "sectionhousehut2024",
+      "title": "Section House Hut",
+      "category": "hut-trips",
+      "startDate": "2024-04-06",
+      "endDate": "2024-04-10",
+      "description": "One of the best hut trips I've ever had the joy of being on. Got to ski the legendary Baldy Mountain outside of Breckenridge completing something that I've been eying up since I was a wee child. Drank a little too much and hiked a little too far, but I would do it all again in a heart beat. Huge shout out to almost everyone on this hut trip for skiing their first peaks above 13,000 ft.",
+      "coverPhoto": "adventures/sectionhousehut2024/cover.jpeg",
+      "gpxFiles": [
+        {
+          "url": "adventures/sectionhousehut2024/route-1762324149760-0.gpx",
+          "label": "Route",
+          "type": "route"
+        },
+        {
+          "url": "adventures/sectionhousehut2024/waypoints-1762324149945-1.gpx",
+          "label": "Waypoints",
+          "type": "waypoints"
+        },
+        {
+          "url": "adventures/sectionhousehut2024/route-1762324150123-2.gpx",
+          "label": "Route",
+          "type": "route"
+        }
+      ],
+      "photos": [
+        "adventures/sectionhousehut2024/cover.jpeg",
+        "adventures/sectionhousehut2024/photo-1.jpeg",
+        "adventures/sectionhousehut2024/photo-2.jpeg",
+        "adventures/sectionhousehut2024/photo-3.jpeg",
+        "adventures/sectionhousehut2024/photo-4.jpeg",
+        "adventures/sectionhousehut2024/photo-5.jpeg",
+        "adventures/sectionhousehut2024/photo-6.jpeg",
+        "adventures/sectionhousehut2024/photo-7.jpeg",
+        "adventures/sectionhousehut2024/photo-8.jpeg",
+        "adventures/sectionhousehut2024/photo-9.jpeg",
+        "adventures/sectionhousehut2024/photo-10.jpeg",
+        "adventures/sectionhousehut2024/photo-11.jpeg",
+        "adventures/sectionhousehut2024/photo-12.jpeg",
+        "adventures/sectionhousehut2024/photo-13.jpeg",
+        "adventures/sectionhousehut2024/photo-14.jpeg",
+        "adventures/sectionhousehut2024/photo-15.jpeg"
+      ]
     }
   ]
 }

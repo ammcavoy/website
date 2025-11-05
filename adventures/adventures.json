@@ -386,6 +386,45 @@
         "adventures/westonpasshut2024/photo-3.jpeg",
         "adventures/westonpasshut2024/photo-4.jpeg"
       ]
+    },
+    {
+      "id": "sopris2024",
+      "title": "Mount Sopris Camp and Ski",
+      "category": "camping",
+      "startDate": "2024-06-01",
+      "endDate": "2024-06-02",
+      "description": "This was one of the hardest hikes in that I have ever had to do. Skis and a tent on the back are really not that light. Tye and Pat chose to sleep on some wet mud with only a tarp coving them, it was essentially like sleeping in a class 3 river. We also may have forgot to set alarms when we got to camp and slept in a little resulting in us having to turn around early. Overall this wasn't a great success, but it was so much fun making some stupid memories with friends.",
+      "coverPhoto": "adventures/sopris2024/cover.jpg",
+      "gpxFiles": [
+        {
+          "url": "adventures/sopris2024/route-1762325570222-0.gpx",
+          "label": "Route",
+          "type": "route"
+        },
+        {
+          "url": "adventures/sopris2024/waypoints-1762325570438-1.gpx",
+          "label": "Waypoints",
+          "type": "waypoints"
+        },
+        {
+          "url": "adventures/sopris2024/route-1762325570657-2.gpx",
+          "label": "Route",
+          "type": "route"
+        }
+      ],
+      "photos": [
+        "adventures/sopris2024/cover.jpg",
+        "adventures/sopris2024/photo-1.jpg",
+        "adventures/sopris2024/photo-2.jpg",
+        "adventures/sopris2024/photo-3.jpg",
+        "adventures/sopris2024/photo-4.jpeg",
+        "adventures/sopris2024/photo-5.jpeg",
+        "adventures/sopris2024/photo-6.jpeg",
+        "adventures/sopris2024/photo-7.jpeg",
+        "adventures/sopris2024/photo-8.jpeg",
+        "adventures/sopris2024/photo-9.jpeg",
+        "adventures/sopris2024/photo-10.jpeg"
+      ]
     }
   ]
 }

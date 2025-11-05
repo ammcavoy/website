@@ -182,6 +182,47 @@
         "adventures/lincoln-ski-14er2025/photo-4.jpeg",
         "adventures/lincoln-ski-14er2025/photo-5.jpeg"
       ]
+    },
+    {
+      "id": "moab-climbing2025",
+      "title": "Exploring Moab",
+      "category": "camping",
+      "startDate": "2025-04-11",
+      "endDate": "2025-04-13",
+      "description": "Went Car Camping in Moab. The site was too close to a busy road which was a shame, but holy cow was it beautiful. Got to climb up some red rocks and see some beautiful views.",
+      "coverPhoto": "adventures/moab-climbing2025/cover.jpeg",
+      "gpxFiles": [
+        {
+          "url": "adventures/moab-climbing2025/route-1762320649275-0.gpx",
+          "label": "Route",
+          "type": "route"
+        },
+        {
+          "url": "adventures/moab-climbing2025/route-1762320649892-1.gpx",
+          "label": "Route",
+          "type": "route"
+        },
+        {
+          "url": "adventures/moab-climbing2025/waypoints-1762320650171-2.gpx",
+          "label": "Waypoints",
+          "type": "waypoints"
+        }
+      ],
+      "photos": [
+        "adventures/moab-climbing2025/cover.jpeg",
+        "adventures/moab-climbing2025/photo-1.jpg",
+        "adventures/moab-climbing2025/photo-2.jpg",
+        "adventures/moab-climbing2025/photo-3.jpg",
+        "adventures/moab-climbing2025/photo-4.jpg",
+        "adventures/moab-climbing2025/photo-5.jpg",
+        "adventures/moab-climbing2025/photo-6.jpg",
+        "adventures/moab-climbing2025/photo-7.jpg",
+        "adventures/moab-climbing2025/photo-8.jpeg",
+        "adventures/moab-climbing2025/photo-9.jpeg",
+        "adventures/moab-climbing2025/photo-10.jpeg",
+        "adventures/moab-climbing2025/photo-11.jpeg",
+        "adventures/moab-climbing2025/photo-12.jpeg"
+      ]
     }
   ]
 }

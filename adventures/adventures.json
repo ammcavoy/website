@@ -265,6 +265,55 @@
         "adventures/bettybearhut2025/photo-7.jpeg",
         "adventures/bettybearhut2025/photo-8.jpeg"
       ]
+    },
+    {
+      "id": "fourpassloop2024",
+      "title": "Four Pass Loop",
+      "category": "camping",
+      "startDate": "2024-09-09",
+      "endDate": "2024-09-12",
+      "description": "The Maroon Bells are some of the most beautiful mountains that I have gotten to enjoy out in Colorado. This three night journey was a lovely experience with Maria and Elisabeth. We met lovely people on the trail and walked away with many more blisters than we started with.",
+      "coverPhoto": "adventures/fourpassloop2024/cover.jpeg",
+      "gpxFiles": [
+        {
+          "url": "adventures/fourpassloop2024/waypoints-1762323053469-0.gpx",
+          "label": "Waypoints",
+          "type": "waypoints"
+        },
+        {
+          "url": "adventures/fourpassloop2024/waypoints-1762323053732-1.gpx",
+          "label": "Waypoints",
+          "type": "waypoints"
+        },
+        {
+          "url": "adventures/fourpassloop2024/waypoints-1762323053911-2.gpx",
+          "label": "Waypoints",
+          "type": "waypoints"
+        },
+        {
+          "url": "adventures/fourpassloop2024/route-1762323054110-3.gpx",
+          "label": "Route",
+          "type": "route"
+        }
+      ],
+      "photos": [
+        "adventures/fourpassloop2024/cover.jpeg",
+        "adventures/fourpassloop2024/photo-1.jpeg",
+        "adventures/fourpassloop2024/photo-2.jpeg",
+        "adventures/fourpassloop2024/photo-3.jpeg",
+        "adventures/fourpassloop2024/photo-4.jpeg",
+        "adventures/fourpassloop2024/photo-5.jpeg",
+        "adventures/fourpassloop2024/photo-6.jpeg",
+        "adventures/fourpassloop2024/photo-7.jpeg",
+        "adventures/fourpassloop2024/photo-8.jpeg",
+        "adventures/fourpassloop2024/photo-9.jpeg",
+        "adventures/fourpassloop2024/photo-10.jpeg",
+        "adventures/fourpassloop2024/photo-11.jpeg",
+        "adventures/fourpassloop2024/photo-12.jpeg",
+        "adventures/fourpassloop2024/photo-13.jpeg",
+        "adventures/fourpassloop2024/photo-14.jpeg",
+        "adventures/fourpassloop2024/photo-15.jpeg"
+      ]
     }
   ]
 }

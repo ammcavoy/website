@@ -358,6 +358,34 @@
         "adventures/sectionhousehut2024/photo-14.jpeg",
         "adventures/sectionhousehut2024/photo-15.jpeg"
       ]
+    },
+    {
+      "id": "westonpasshut2024",
+      "title": "Weston Pass Hut",
+      "category": "hut-trips",
+      "startDate": "2024-02-17",
+      "endDate": "2024-02-19",
+      "description": "Easily the worst hut I have been on (Skiing wise). Snow was wind blown to hell and back and all of the lines we thought we could ski were completely bare rock, very not cash money. The hut itself was actually so incredible and I would love to stay in such a luxurious hut in the future.",
+      "coverPhoto": "adventures/westonpasshut2024/cover.jpeg",
+      "gpxFiles": [
+        {
+          "url": "adventures/westonpasshut2024/waypoints-1762324764325-0.gpx",
+          "label": "Waypoints",
+          "type": "waypoints"
+        },
+        {
+          "url": "adventures/westonpasshut2024/route-1762324764547-1.gpx",
+          "label": "Route",
+          "type": "route"
+        }
+      ],
+      "photos": [
+        "adventures/westonpasshut2024/cover.jpeg",
+        "adventures/westonpasshut2024/photo-1.jpeg",
+        "adventures/westonpasshut2024/photo-2.jpeg",
+        "adventures/westonpasshut2024/photo-3.jpeg",
+        "adventures/westonpasshut2024/photo-4.jpeg"
+      ]
     }
   ]
 }

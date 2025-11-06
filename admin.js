@@ -148,7 +148,13 @@ async function loadAdventuresList() {
 // Load selected adventure for editing
 async function loadAdventureForEdit() {
     const index = document.getElementById('existing-adventures').value;
-    if (index === '') return;
+    if (index === '') {
+        document.getElementById('delete-adventure-section').style.display = 'none';
+        return;
+    }
+
+    // Show delete button when an adventure is selected
+    document.getElementById('delete-adventure-section').style.display = 'block';
 
     currentAdventure = allAdventures[index];
 
@@ -156,6 +162,7 @@ async function loadAdventureForEdit() {
     document.getElementById('adventure-id').value = currentAdventure.id;
     document.getElementById('adventure-title').value = currentAdventure.title;
     document.getElementById('adventure-description').value = currentAdventure.description;
+    document.getElementById('youtube-url').value = currentAdventure.youtubeUrl || '';
 
     // Handle categories (can be single value or array)
     const categories = Array.isArray(currentAdventure.categories)
@@ -518,6 +525,102 @@ function resetForm() {
     displayGpxFiles();
 }
 
+// Delete an adventure
+async function deleteAdventure() {
+    if (!currentAdventure) {
+        alert('No adventure selected');
+        return;
+    }
+
+    const confirmed = confirm(`Are you sure you want to delete "${currentAdventure.title}"? This action cannot be undone.`);
+    if (!confirmed) return;
+
+    if (!githubToken) {
+        alert('Please save your GitHub token first');
+        return;
+    }
+
+    try {
+        loadGitHubConfig();
+        showProgress('Deleting adventure...', 0);
+
+        // Get current branch reference
+        showProgress('Getting repository info...', 20);
+        const refData = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/refs/heads/${githubConfig.branch}`);
+        const latestCommitSha = refData.object.sha;
+
+        // Get the current commit
+        showProgress('Reading current commit...', 40);
+        const commitData = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/commits/${latestCommitSha}`);
+        const treeSha = commitData.tree.sha;
+
+        // Read current adventures.json
+        showProgress('Reading adventures list...', 50);
+        const adventuresFile = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/contents/adventures/adventures.json`);
+        const content = atob(adventuresFile.content);
+        const data = JSON.parse(content);
+        let adventures = data.adventures || [];
+
+        // Remove the adventure
+        adventures = adventures.filter(adv => adv.id !== currentAdventure.id);
+
+        // Update adventures.json
+        showProgress('Updating adventure list...', 70);
+        const updatedAdventuresJson = JSON.stringify({ adventures }, null, 2);
+        const jsonBlob = await createBlob(btoa(updatedAdventuresJson));
+
+        // Create new tree
+        showProgress('Creating file tree...', 80);
+        const newTree = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/trees`, {
+            method: 'POST',
+            body: JSON.stringify({
+                base_tree: treeSha,
+                tree: [{
+                    path: 'adventures/adventures.json',
+                    sha: jsonBlob.sha,
+                    mode: '100644',
+                    type: 'blob'
+                }]
+            })
+        });
+
+        // Create new commit
+        showProgress('Creating commit...', 90);
+        const newCommit = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/commits`, {
+            method: 'POST',
+            body: JSON.stringify({
+                message: `Delete adventure: ${currentAdventure.title}`,
+                tree: newTree.sha,
+                parents: [latestCommitSha]
+            })
+        });
+
+        // Update branch reference
+        showProgress('Pushing to GitHub...', 95);
+        await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/refs/heads/${githubConfig.branch}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                sha: newCommit.sha
+            })
+        });
+
+        showProgress('Complete!', 100);
+        setTimeout(() => {
+            hideProgress();
+            alert('Adventure deleted successfully!');
+            resetForm();
+            loadAdventuresList();
+            document.getElementById('existing-adventures').value = '';
+            document.getElementById('delete-adventure-section').style.display = 'none';
+        }, 1000);
+
+    } catch (error) {
+        hideProgress();
+        alert(`Delete failed: ${error.message}`);
+        console.error('Delete error:', error);
+    }
+}
+
 // Handle form submission
 document.getElementById('adventure-form').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -567,6 +670,9 @@ document.getElementById('adventure-form').addEventListener('submit', async funct
     const remainingExisting = existingGpxFiles.filter(gpx => !gpxFilesToRemove.includes(gpx.url));
     const totalGpxFiles = remainingExisting.length + newGpxFiles.length;
 
+    // Get YouTube URL if provided
+    const youtubeUrl = document.getElementById('youtube-url').value.trim();
+
     // Build adventure object
     const adventure = {
         id: id,
@@ -578,6 +684,11 @@ document.getElementById('adventure-form').addEventListener('submit', async funct
         gpxFiles: [], // Will be populated during upload
         photos: []
     };
+
+    // Add YouTube URL if provided
+    if (youtubeUrl) {
+        adventure.youtubeUrl = youtubeUrl;
+    }
 
     try {
         await uploadAdventureToGitHub(adventure, newGpxFiles, selectedPhotos, existingPhotos, remainingExisting);

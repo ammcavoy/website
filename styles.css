@@ -467,6 +467,64 @@ body {
     position: relative;
 }
 
+.modal-youtube {
+    margin: 2rem 0;
+}
+
+.modal-youtube h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.modal-youtube a {
+    display: block;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-youtube a:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.youtube-thumbnail {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.youtube-play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 68px;
+    height: 48px;
+    background-color: rgba(255, 0, 0, 0.8);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.youtube-play-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-40%, -50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 0 10px 20px;
+    border-color: transparent transparent transparent white;
+}
+
+.modal-youtube a:hover .youtube-play-button {
+    background-color: rgba(255, 0, 0, 1);
+}
+
 .custom-gpx-marker {
     background: none;
     border: none;

@@ -675,6 +675,9 @@
                     <option value="">-- Choose an adventure --</option>
                 </select>
             </div>
+            <div id="delete-adventure-section" style="display: none; margin-top: 1rem;">
+                <button type="button" class="delete-btn" onclick="deleteAdventure()" style="background-color: #dc3545; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 4px; cursor: pointer;">Delete This Adventure</button>
+            </div>
         </div>
 
         <form id="adventure-form">
@@ -711,6 +714,12 @@
             <div class="form-group">
                 <label for="adventure-description">Description *</label>
                 <textarea id="adventure-description" placeholder="Write about your adventure..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="youtube-url">YouTube Video URL <small>(optional)</small></label>
+                <input type="url" id="youtube-url" placeholder="e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+                <small>Paste a YouTube video URL to display a clickable thumbnail</small>
             </div>
 
             <div class="form-group">

@@ -2,6 +2,27 @@
 let adventuresData = [];
 let activeSubtypeFilter = null;
 
+// Extract YouTube video ID from URL
+function extractYouTubeVideoId(url) {
+    if (!url) return null;
+
+    // Handle various YouTube URL formats
+    const patterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+        /youtube\.com\/v\/([^&\n?#]+)/,
+        /youtube\.com\/shorts\/([^&\n?#]+)/
+    ];
+
+    for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match && match[1]) {
+            return match[1];
+        }
+    }
+
+    return null;
+}
+
 // Load adventures from JSON file
 async function loadAdventures() {
     try {
@@ -209,6 +230,24 @@ function openAdventureModal(adventure) {
         `;
     }
 
+    // Extract YouTube video ID if URL exists
+    let youtubeSection = '';
+    if (adventure.youtubeUrl) {
+        const videoId = extractYouTubeVideoId(adventure.youtubeUrl);
+        if (videoId) {
+            const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            youtubeSection = `
+                <div class="modal-youtube">
+                    <h3>Video</h3>
+                    <a href="${adventure.youtubeUrl}" target="_blank" rel="noopener noreferrer">
+                        <img src="${thumbnailUrl}" alt="YouTube Video" class="youtube-thumbnail">
+                        <div class="youtube-play-button"></div>
+                    </a>
+                </div>
+            `;
+        }
+    }
+
     modal.querySelector('.modal-content').innerHTML = `
         <button class="modal-close" onclick="closeAdventureModal()">&times;</button>
         ${adventure.coverPhoto ? `<img src="${adventure.coverPhoto}" alt="${adventure.title}" class="modal-header-image" id="modal-header-image">` : ''}
@@ -216,6 +255,7 @@ function openAdventureModal(adventure) {
             <h2 class="modal-title">${adventure.title}</h2>
             <div class="modal-date">${formattedDate}</div>
             <div class="modal-description">${adventure.description}</div>
+            ${youtubeSection}
             ${getGpxFiles(adventure).length > 0 ? '<div id="modal-map" class="modal-map"></div>' : ''}
             ${photosHtml}
         </div>

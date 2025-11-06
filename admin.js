@@ -15,6 +15,10 @@ let existingGpxFiles = [];
 let newGpxFiles = [];
 let gpxFilesToRemove = [];
 
+// Tab management variables
+let tabsConfig = null;
+let editingTabIndex = -1;
+
 // Load saved token and adventures on page load
 window.addEventListener('DOMContentLoaded', () => {
     const saved = localStorage.getItem('github-token');
@@ -30,6 +34,9 @@ window.addEventListener('DOMContentLoaded', () => {
     if (githubConfig.owner && githubConfig.repo) {
         loadAdventuresList();
     }
+
+    // Load category options from tabs config
+    loadAdventureCategoryOptions();
 });
 
 // Save GitHub token
@@ -148,8 +155,21 @@ async function loadAdventureForEdit() {
     // Populate form fields
     document.getElementById('adventure-id').value = currentAdventure.id;
     document.getElementById('adventure-title').value = currentAdventure.title;
-    document.getElementById('adventure-category').value = currentAdventure.category || 'day-hikes';
     document.getElementById('adventure-description').value = currentAdventure.description;
+
+    // Handle categories (can be single value or array)
+    const categories = Array.isArray(currentAdventure.categories)
+        ? currentAdventure.categories
+        : (currentAdventure.category ? [currentAdventure.category] : []);
+
+    // Uncheck all checkboxes first
+    document.querySelectorAll('input[name="categories"]').forEach(cb => cb.checked = false);
+
+    // Check the appropriate checkboxes
+    categories.forEach(cat => {
+        const checkbox = document.getElementById(`category-${cat}`);
+        if (checkbox) checkbox.checked = true;
+    });
 
     // Handle dates
     updateDateFields();
@@ -199,10 +219,13 @@ async function loadAdventureForEdit() {
     displayPhotoGrid();
 }
 
-// Update date fields based on category
+// Update date fields based on selected categories
 function updateDateFields() {
-    const category = document.getElementById('adventure-category').value;
-    const needsRange = ['camping', 'hut-trips', 'other'].includes(category);
+    const selectedCategories = Array.from(document.querySelectorAll('input[name="categories"]:checked'))
+        .map(cb => cb.value);
+
+    // Use date range if any selected category needs it
+    const needsRange = selectedCategories.some(cat => ['camping', 'hut-trips', 'other'].includes(cat));
 
     document.getElementById('single-date-group').style.display = needsRange ? 'none' : 'block';
     document.getElementById('date-range-group').style.display = needsRange ? 'block' : 'none';
@@ -463,7 +486,6 @@ document.getElementById('adventure-form').addEventListener('submit', async funct
 
     const id = document.getElementById('adventure-id').value.trim();
     const title = document.getElementById('adventure-title').value.trim();
-    const category = document.getElementById('adventure-category').value;
     const description = document.getElementById('adventure-description').value.trim();
 
     // Validate adventure ID format
@@ -472,9 +494,18 @@ document.getElementById('adventure-form').addEventListener('submit', async funct
         return;
     }
 
+    // Get selected categories
+    const categories = Array.from(document.querySelectorAll('input[name="categories"]:checked'))
+        .map(cb => cb.value);
+
+    if (categories.length === 0) {
+        alert('Please select at least one category');
+        return;
+    }
+
     // Get dates
     let dateData = {};
-    const needsRange = ['camping', 'hut-trips', 'other'].includes(category);
+    const needsRange = categories.some(cat => ['camping', 'hut-trips', 'other'].includes(cat));
     if (needsRange) {
         dateData.startDate = document.getElementById('adventure-start-date').value;
         dateData.endDate = document.getElementById('adventure-end-date').value;
@@ -489,20 +520,17 @@ document.getElementById('adventure-form').addEventListener('submit', async funct
         return;
     }
 
-    // Check GPX file requirements
+    // GPX files are now optional
     const remainingExisting = existingGpxFiles.filter(gpx => !gpxFilesToRemove.includes(gpx.url));
     const totalGpxFiles = remainingExisting.length + newGpxFiles.length;
-
-    if (totalGpxFiles === 0) {
-        alert('Please upload at least one GPX file');
-        return;
-    }
 
     // Build adventure object
     const adventure = {
         id: id,
         title: title,
-        category: category,
+        categories: categories,
+        // Keep 'category' for backward compatibility (use first selected category)
+        category: categories[0],
         ...dateData,
         description: description,
         coverPhoto: null, // Will be set after determining photo paths
@@ -793,4 +821,343 @@ function showSuccess(adventure, commitSha) {
 
     // Reload adventures list
     loadAdventuresList();
+}
+
+// Load adventure category options from tabs config
+async function loadAdventureCategoryOptions() {
+    try {
+        const response = await fetch('tabs-config.json');
+        const config = await response.json();
+
+        const adventuresTab = config.tabs.find(tab => tab.id === 'adventures');
+        if (!adventuresTab || !adventuresTab.subtypes) {
+            return;
+        }
+
+        const container = document.getElementById('adventure-categories');
+        if (!container) return;
+
+        // Clear existing checkboxes
+        container.innerHTML = '';
+
+        // Add checkboxes from config
+        adventuresTab.subtypes.forEach(subtype => {
+            const item = document.createElement('div');
+            item.className = 'category-checkbox-item';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `category-${subtype.id}`;
+            checkbox.name = 'categories';
+            checkbox.value = subtype.id;
+            checkbox.addEventListener('change', updateDateFields);
+
+            const label = document.createElement('label');
+            label.htmlFor = `category-${subtype.id}`;
+            label.textContent = `${subtype.icon || ''} ${subtype.label}`.trim();
+
+            item.appendChild(checkbox);
+            item.appendChild(label);
+            container.appendChild(item);
+        });
+    } catch (error) {
+        console.error('Error loading category options:', error);
+        // Fallback to hardcoded categories if config fails to load
+    }
+}
+
+// ===== TAB MANAGEMENT FUNCTIONS =====
+
+// Switch between admin sections
+function switchAdminTab(tab) {
+    document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.admin-section').forEach(section => section.style.display = 'none');
+
+    if (tab === 'tabs') {
+        document.querySelector('.admin-tab-btn:nth-child(1)').classList.add('active');
+        document.getElementById('admin-tabs-section').style.display = 'block';
+        loadTabsConfig();
+    } else if (tab === 'adventure') {
+        document.querySelector('.admin-tab-btn:nth-child(2)').classList.add('active');
+        document.getElementById('admin-adventure-section').style.display = 'block';
+    }
+}
+
+// Load tabs configuration
+async function loadTabsConfig() {
+    try {
+        const response = await fetch('tabs-config.json');
+        tabsConfig = await response.json();
+        displayTabsList();
+    } catch (error) {
+        console.error('Error loading tabs config:', error);
+        alert('Error loading tabs configuration');
+    }
+}
+
+// Display list of tabs
+function displayTabsList() {
+    const container = document.getElementById('tabs-list');
+    container.innerHTML = '';
+
+    if (!tabsConfig || !tabsConfig.tabs || tabsConfig.tabs.length === 0) {
+        container.innerHTML = '<p>No tabs configured yet.</p>';
+        return;
+    }
+
+    tabsConfig.tabs.forEach((tab, index) => {
+        const item = document.createElement('div');
+        item.className = 'tab-item';
+
+        const subtypesHtml = tab.subtypes && tab.subtypes.length > 0
+            ? `<div class="tab-subtypes">
+                ${tab.subtypes.map(st => `<span class="subtype-badge">${st.icon || ''} ${st.label}</span>`).join('')}
+               </div>`
+            : '<div class="tab-subtypes"><span style="color: #999;">No subtypes</span></div>';
+
+        item.innerHTML = `
+            <div class="tab-item-header">
+                <div>
+                    <div class="tab-item-title">${tab.label} <small style="color: #999;">(${tab.id})</small></div>
+                    <small style="color: ${tab.enabled ? 'green' : 'red'};">${tab.enabled ? 'Enabled' : 'Disabled'}</small>
+                </div>
+                <div class="tab-item-actions">
+                    <button class="edit-tab-btn" onclick="editTab(${index})">Edit</button>
+                    <button class="delete-tab-btn" onclick="deleteTab(${index})">Delete</button>
+                </div>
+            </div>
+            ${subtypesHtml}
+        `;
+
+        container.appendChild(item);
+    });
+}
+
+// Edit a tab
+function editTab(index) {
+    editingTabIndex = index;
+    const tab = tabsConfig.tabs[index];
+
+    document.getElementById('tab-editor-title').textContent = 'Edit Tab';
+    document.getElementById('editing-tab-id').value = tab.id;
+    document.getElementById('tab-id').value = tab.id;
+    document.getElementById('tab-id').disabled = true; // Can't change ID when editing
+    document.getElementById('tab-label').value = tab.label;
+    document.getElementById('tab-enabled').checked = tab.enabled;
+
+    // Clear and populate subtypes
+    const container = document.getElementById('subtypes-container');
+    container.innerHTML = '';
+
+    if (tab.subtypes && tab.subtypes.length > 0) {
+        tab.subtypes.forEach(subtype => {
+            addSubtypeField(subtype);
+        });
+    }
+
+    // Scroll to form
+    document.getElementById('tab-form').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Delete a tab
+async function deleteTab(index) {
+    const tab = tabsConfig.tabs[index];
+
+    if (!confirm(`Are you sure you want to delete the "${tab.label}" tab? This cannot be undone.`)) {
+        return;
+    }
+
+    tabsConfig.tabs.splice(index, 1);
+
+    try {
+        await saveTabsConfig();
+        displayTabsList();
+        alert('Tab deleted successfully!');
+    } catch (error) {
+        alert('Error deleting tab: ' + error.message);
+    }
+}
+
+// Add a subtype field to the form
+function addSubtypeField(subtype = null) {
+    const container = document.getElementById('subtypes-container');
+
+    const field = document.createElement('div');
+    field.className = 'subtype-field';
+    field.innerHTML = `
+        <input type="text"
+               class="subtype-icon"
+               placeholder="Icon"
+               value="${subtype?.icon || ''}"
+               data-field="icon">
+        <input type="text"
+               class="subtype-id"
+               placeholder="Subtype ID (e.g., web-apps)"
+               value="${subtype?.id || ''}"
+               data-field="id"
+               required>
+        <input type="text"
+               class="subtype-label"
+               placeholder="Subtype Label (e.g., Web Apps)"
+               value="${subtype?.label || ''}"
+               data-field="label"
+               required>
+        <button type="button" class="remove-subtype-btn" onclick="removeSubtypeField(this)">Remove</button>
+    `;
+
+    container.appendChild(field);
+}
+
+// Remove a subtype field
+function removeSubtypeField(button) {
+    button.parentElement.remove();
+}
+
+// Cancel tab editing
+function cancelTabEdit() {
+    editingTabIndex = -1;
+    document.getElementById('tab-editor-title').textContent = 'Create New Tab';
+    document.getElementById('tab-form').reset();
+    document.getElementById('tab-id').disabled = false;
+    document.getElementById('editing-tab-id').value = '';
+    document.getElementById('subtypes-container').innerHTML = '';
+}
+
+// Handle tab form submission
+document.addEventListener('DOMContentLoaded', () => {
+    const tabForm = document.getElementById('tab-form');
+    if (tabForm) {
+        tabForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const tabId = document.getElementById('tab-id').value.trim();
+            const tabLabel = document.getElementById('tab-label').value.trim();
+            const tabEnabled = document.getElementById('tab-enabled').checked;
+
+            // Validate tab ID format
+            if (!/^[a-z0-9-]+$/.test(tabId)) {
+                alert('Tab ID must contain only lowercase letters, numbers, and hyphens');
+                return;
+            }
+
+            // Collect subtypes
+            const subtypes = [];
+            const subtypeFields = document.querySelectorAll('.subtype-field');
+            subtypeFields.forEach(field => {
+                const icon = field.querySelector('[data-field="icon"]').value.trim();
+                const id = field.querySelector('[data-field="id"]').value.trim();
+                const label = field.querySelector('[data-field="label"]').value.trim();
+
+                if (id && label) {
+                    // Validate subtype ID
+                    if (!/^[a-z0-9-]+$/.test(id)) {
+                        alert(`Subtype ID "${id}" must contain only lowercase letters, numbers, and hyphens`);
+                        return;
+                    }
+                    subtypes.push({ id, label, icon });
+                }
+            });
+
+            const tab = {
+                id: tabId,
+                label: tabLabel,
+                dataFile: `${tabId}/${tabId}.json`,
+                enabled: tabEnabled,
+                subtypes: subtypes
+            };
+
+            try {
+                if (editingTabIndex >= 0) {
+                    // Update existing tab
+                    tabsConfig.tabs[editingTabIndex] = tab;
+                } else {
+                    // Check if tab ID already exists
+                    if (tabsConfig.tabs.some(t => t.id === tabId)) {
+                        alert('A tab with this ID already exists');
+                        return;
+                    }
+                    // Add new tab
+                    tabsConfig.tabs.push(tab);
+                }
+
+                await saveTabsConfig();
+                displayTabsList();
+                cancelTabEdit();
+                alert('Tab saved successfully!');
+            } catch (error) {
+                alert('Error saving tab: ' + error.message);
+            }
+        });
+    }
+});
+
+// Save tabs config to GitHub
+async function saveTabsConfig() {
+    if (!githubToken) {
+        throw new Error('Please save your GitHub token first');
+    }
+
+    loadGitHubConfig();
+    showProgress('Saving tabs configuration...', 0);
+
+    try {
+        // Get current branch reference
+        showProgress('Getting repository info...', 20);
+        const refData = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/refs/heads/${githubConfig.branch}`);
+        const latestCommitSha = refData.object.sha;
+
+        // Get the current commit
+        showProgress('Reading current commit...', 40);
+        const commitData = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/commits/${latestCommitSha}`);
+        const treeSha = commitData.tree.sha;
+
+        // Create blob for tabs-config.json
+        showProgress('Uploading configuration...', 60);
+        const configContent = JSON.stringify(tabsConfig, null, 2);
+        // Encode UTF-8 to base64 (supports emojis and special characters)
+        const configBase64 = btoa(unescape(encodeURIComponent(configContent)));
+        const configBlob = await createBlob(configBase64);
+
+        // Create new tree
+        showProgress('Creating file tree...', 70);
+        const newTree = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/trees`, {
+            method: 'POST',
+            body: JSON.stringify({
+                base_tree: treeSha,
+                tree: [{
+                    path: 'tabs-config.json',
+                    sha: configBlob.sha,
+                    mode: '100644',
+                    type: 'blob'
+                }]
+            })
+        });
+
+        // Create new commit
+        showProgress('Creating commit...', 85);
+        const newCommit = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/commits`, {
+            method: 'POST',
+            body: JSON.stringify({
+                message: 'Update tabs configuration',
+                tree: newTree.sha,
+                parents: [latestCommitSha]
+            })
+        });
+
+        // Update branch reference
+        showProgress('Pushing to GitHub...', 95);
+        await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/refs/heads/${githubConfig.branch}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                sha: newCommit.sha
+            })
+        });
+
+        showProgress('Complete!', 100);
+        setTimeout(() => hideProgress(), 1000);
+
+    } catch (error) {
+        hideProgress();
+        throw error;
+    }
 }

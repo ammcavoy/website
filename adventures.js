@@ -1,5 +1,6 @@
 // Adventures loader and display script
 let adventuresData = [];
+let activeSubtypeFilter = null;
 
 // Load adventures from JSON file
 async function loadAdventures() {
@@ -15,6 +16,10 @@ async function loadAdventures() {
             // Sort in descending order (most recent first)
             return dateB - dateA;
         });
+
+        // Get filter from URL
+        const params = new URLSearchParams(window.location.search);
+        activeSubtypeFilter = params.get('subtype');
 
         displayAdventures();
     } catch (error) {
@@ -32,9 +37,26 @@ function displayAdventures() {
         return;
     }
 
+    // Filter adventures by subtype if filter is active
+    let filteredAdventures = adventuresData;
+    if (activeSubtypeFilter) {
+        filteredAdventures = adventuresData.filter(adv => {
+            // Support both single category and multiple categories
+            if (Array.isArray(adv.categories)) {
+                return adv.categories.includes(activeSubtypeFilter);
+            }
+            return adv.category === activeSubtypeFilter;
+        });
+    }
+
+    if (filteredAdventures.length === 0) {
+        grid.innerHTML = '<div class="no-adventures">No adventures found for this category.</div>';
+        return;
+    }
+
     grid.innerHTML = '';
 
-    adventuresData.forEach((adventure, index) => {
+    filteredAdventures.forEach((adventure, index) => {
         const card = createAdventureCard(adventure, index);
         grid.appendChild(card);
     });
@@ -46,12 +68,15 @@ function createAdventureCard(adventure, index) {
     card.className = 'adventure-card';
     card.onclick = () => openAdventureModal(adventure);
 
-    // Create cover photo or map preview
+    // Create cover photo, map preview, or placeholder
     let mediaHtml = '';
     if (adventure.coverPhoto) {
         mediaHtml = `<img src="${adventure.coverPhoto}" alt="${adventure.title}" class="adventure-cover-photo">`;
     } else if (adventure.gpxFile) {
         mediaHtml = `<div id="map-preview-${index}" class="adventure-map"></div>`;
+    } else {
+        // Placeholder for adventures without cover photo or GPX
+        mediaHtml = `<div class="adventure-placeholder"></div>`;
     }
 
     // Format date(s)
@@ -71,20 +96,31 @@ function createAdventureCard(adventure, index) {
         formattedDate = 'Date TBD';
     }
 
-    // Get category label
+    // Get category labels
     const categoryLabels = {
         'day-hikes': 'Day Hike',
         'camping': 'Camping',
         'backcountry-lines': 'Backcountry',
         'hut-trips': 'Hut Trip',
-        'other': 'Adventure'
+        'other': 'Adventure',
+        '14ers': '14er'
     };
-    const categoryLabel = categoryLabels[adventure.category] || 'Adventure';
+
+    // Support both single category and multiple categories
+    let categoryBadgesHtml = '';
+    if (Array.isArray(adventure.categories)) {
+        categoryBadgesHtml = adventure.categories
+            .map(cat => `<div class="adventure-category-badge">${categoryLabels[cat] || cat}</div>`)
+            .join('');
+    } else {
+        const categoryLabel = categoryLabels[adventure.category] || 'Adventure';
+        categoryBadgesHtml = `<div class="adventure-category-badge">${categoryLabel}</div>`;
+    }
 
     card.innerHTML = `
         ${mediaHtml}
         <div class="card-content">
-            <div class="adventure-category-badge">${categoryLabel}</div>
+            <div class="adventure-category-badges">${categoryBadgesHtml}</div>
             <h3>${adventure.title}</h3>
             <div class="adventure-date">${formattedDate}</div>
         </div>

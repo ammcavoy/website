@@ -397,13 +397,203 @@
             text-align: center;
             color: #666;
         }
+
+        /* Admin Tabs */
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .admin-tab-btn {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .admin-tab-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .admin-tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        /* Tab Management */
+        .tabs-manager {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .current-tabs {
+            background-color: var(--light-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .tab-item {
+            background-color: white;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .tab-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .tab-item-title {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .tab-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tab-item-actions button {
+            padding: 0.25rem 0.75rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .edit-tab-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .delete-tab-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .tab-subtypes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .subtype-badge {
+            background-color: var(--light-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: var(--text-color);
+        }
+
+        .tab-editor {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .subtype-field {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .subtype-field input {
+            flex: 1;
+        }
+
+        .subtype-field .subtype-icon {
+            width: 60px;
+        }
+
+        .remove-subtype-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .add-subtype-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        .cancel-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 968px) {
+            .tabs-manager {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Category Checkboxes */
+        .category-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
+            padding: 1rem;
+            background-color: var(--light-color);
+            border-radius: 4px;
+        }
+
+        .category-checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .category-checkbox-item input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .category-checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+        }
     </style>
 </head>
 <body>
     <div class="admin-container">
         <div class="admin-header">
-            <h1>Add New Adventure</h1>
-            <p>Upload adventures directly to GitHub from anywhere</p>
+            <h1>Website Admin</h1>
+            <p>Manage your website content and structure</p>
         </div>
 
         <div class="github-setup">
@@ -417,13 +607,21 @@
             <div id="token-status" class="token-status"></div>
         </div>
 
+        <div class="admin-tabs">
+            <button class="admin-tab-btn" onclick="switchAdminTab('tabs')">Manage Tabs</button>
+            <button class="admin-tab-btn active" onclick="switchAdminTab('adventure')">Manage Adventures</button>
+        </div>
+
+        <div id="admin-adventure-section" class="admin-section" style="display: block;">
+            <h2>Adventure Management</h2>
+
         <div class="instructions">
             <h3>How to Add an Adventure</h3>
             <ol>
                 <li>Set up your GitHub token above (one-time setup)</li>
                 <li>Fill out all the fields below with your adventure details</li>
-                <li>Upload your GPX file from onX</li>
                 <li>Upload photos and select a cover photo</li>
+                <li>(Optional) Upload GPX files from onX for route mapping</li>
                 <li>Click "Upload Adventure to GitHub" - everything will be committed automatically!</li>
             </ol>
         </div>
@@ -455,15 +653,10 @@
             </div>
 
             <div class="form-group">
-                <label for="adventure-category">Category *</label>
-                <select id="adventure-category" required onchange="updateDateFields()">
-                    <option value="">-- Select a category --</option>
-                    <option value="day-hikes">Day Hikes</option>
-                    <option value="camping">Camping</option>
-                    <option value="backcountry-lines">Backcountry Lines</option>
-                    <option value="hut-trips">Hut Trips</option>
-                    <option value="other">Other</option>
-                </select>
+                <label>Categories * <small>(Select at least one)</small></label>
+                <div id="adventure-categories" class="category-checkboxes">
+                    <!-- Checkboxes loaded dynamically from tabs-config.json -->
+                </div>
             </div>
 
             <div class="form-group" id="single-date-group">
@@ -484,7 +677,7 @@
             </div>
 
             <div class="form-group">
-                <label for="gpx-files">GPX Files</label>
+                <label for="gpx-files">GPX Files <small>(optional)</small></label>
                 <div id="existing-gpx-list" style="margin-bottom: 1rem; display: none;">
                     <div style="font-weight: 500; margin-bottom: 0.5rem;">Current GPX Files:</div>
                     <div id="gpx-files-container"></div>
@@ -516,6 +709,55 @@
 
             <h4>View on GitHub</h4>
             <p id="github-link"></p>
+        </div>
+        </div>
+
+        <!-- Tab Management Section -->
+        <div id="admin-tabs-section" class="admin-section" style="display: none;">
+            <h2>Tab Management</h2>
+            <p>Create and manage tabs and their subtypes (categories).</p>
+
+            <div class="tabs-manager">
+                <div class="current-tabs">
+                    <h3>Current Tabs</h3>
+                    <div id="tabs-list"></div>
+                </div>
+
+                <div class="tab-editor">
+                    <h3 id="tab-editor-title">Create New Tab</h3>
+                    <form id="tab-form">
+                        <input type="hidden" id="editing-tab-id">
+
+                        <div class="form-group">
+                            <label for="tab-id">Tab ID *</label>
+                            <input type="text" id="tab-id" placeholder="e.g., projects, blog" required>
+                            <small>Lowercase letters and hyphens only (used in URL)</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tab-label">Tab Label *</label>
+                            <input type="text" id="tab-label" placeholder="e.g., Projects, Blog" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tab-enabled">
+                                <input type="checkbox" id="tab-enabled" checked>
+                                Enable this tab
+                            </label>
+                        </div>
+
+                        <h4>Subtypes (Categories)</h4>
+                        <div id="subtypes-container"></div>
+
+                        <button type="button" class="add-subtype-btn" onclick="addSubtypeField()">+ Add Subtype</button>
+
+                        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                            <button type="submit" class="submit-btn" style="flex: 1;">Save Tab</button>
+                            <button type="button" class="cancel-btn" onclick="cancelTabEdit()" style="flex: 1; background-color: #6c757d;">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -9,32 +9,32 @@
         {
           "id": "day-hikes",
           "label": "Day Hikes",
-          "icon": "🥾"
+          "icon": ""
         },
         {
           "id": "camping",
           "label": "Camping",
-          "icon": "⛺"
+          "icon": ""
         },
         {
           "id": "backcountry-lines",
           "label": "Backcountry Lines",
-          "icon": "⛷️"
+          "icon": ""
         },
         {
           "id": "hut-trips",
           "label": "Hut Trips",
-          "icon": "🏔️"
+          "icon": ""
         },
         {
           "id": "other",
           "label": "Other",
-          "icon": "🌲"
+          "icon": ""
         },
         {
           "id": "14ers",
           "label": "14ers",
-          "icon": "🏔️"
+          "icon": ""
         }
       ]
     }

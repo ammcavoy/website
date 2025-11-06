@@ -1,21 +1,3 @@
 {
-  "entries": [
-    {
-      "id": "testasd",
-      "title": "TEst asd",
-      "categories": [
-        "asd"
-      ],
-      "date": "2025-11-04",
-      "description": "das",
-      "coverPhoto": "asd/testasd/cover.jpeg",
-      "gpxFiles": [],
-      "photos": [
-        "asd/testasd/cover.jpeg",
-        "asd/testasd/photo-1.jpeg",
-        "asd/testasd/photo-2.jpeg",
-        "asd/testasd/photo-3.jpeg"
-      ]
-    }
-  ]
+  "entries": []
 }

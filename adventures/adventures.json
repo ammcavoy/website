@@ -44,10 +44,6 @@
     {
       "id": "14er-antero",
       "title": "Mount Antero",
-      "categories": [
-        "day-hikes",
-        "14ers"
-      ],
       "category": "day-hikes",
       "date": "2025-09-01",
       "description": "Did some car camping, saw a pretty sun rise, and most importantly enjoyed a cig at the summit. God bless.",
@@ -96,6 +92,10 @@
     {
       "id": "decalibron14ers2025",
       "title": "DeCaLiBron Loop",
+      "categories": [
+        "day-hikes",
+        "14ers"
+      ],
       "category": "day-hikes",
       "date": "2025-06-14",
       "description": "Slept in the car with the lovely lad Zach. Woke up and went up, had the honor of summiting 4 14ers in a single day. Lovely making it to the top of Lincoln after the attempt on skis in the spring. Got to see a little goat and some lovely snow covered ridge lines. Overall a nice hike with lovely views.",

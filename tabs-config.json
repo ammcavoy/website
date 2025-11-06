@@ -33,6 +33,20 @@
           "icon": ""
         }
       ]
+    },
+    {
+      "id": "test",
+      "label": "Test Tab",
+      "dataFile": "test/test.json",
+      "enabled": true,
+      "headerText": "This is a test tab, if you are reading this pretend you didn't.",
+      "subtypes": [
+        {
+          "id": "type1",
+          "label": "Type 1",
+          "icon": ""
+        }
+      ]
     }
   ]
 }

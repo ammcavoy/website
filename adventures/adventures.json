@@ -485,6 +485,34 @@
         "adventures/mount-bierstadt14er2024/photo-9.jpeg",
         "adventures/mount-bierstadt14er2024/photo-10.jpeg"
       ]
+    },
+    {
+      "id": "grays-and-torreys14er2022",
+      "title": "Grays and Torreys",
+      "categories": [
+        "camping",
+        "14ers"
+      ],
+      "startDate": "2022-09-04",
+      "endDate": "2022-09-05",
+      "description": "This one was a journey for sure. It Tye, Carly, and My first 14er and we were very underprepared. None of us brought gloves so we used spare socks as gloves, we trusted Carly to remember the food (it got left in the car), and we thought smoking at 11,000 feet before bed was a good idea (it wasn't). I think Carly puked and Tye fell 3-5 times on the down hike because his shoes had no tread. Overall a great experience that I learned a ton from and will never forget.",
+      "coverPhoto": "adventures/grays-and-torreys14er2022/cover.jpg",
+      "gpxFiles": [],
+      "photos": [
+        "adventures/grays-and-torreys14er2022/cover.jpg",
+        "adventures/grays-and-torreys14er2022/photo-1.jpg",
+        "adventures/grays-and-torreys14er2022/photo-2.jpg",
+        "adventures/grays-and-torreys14er2022/photo-3.jpg",
+        "adventures/grays-and-torreys14er2022/photo-4.jpg",
+        "adventures/grays-and-torreys14er2022/photo-5.jpg",
+        "adventures/grays-and-torreys14er2022/photo-6.jpg",
+        "adventures/grays-and-torreys14er2022/photo-7.jpg",
+        "adventures/grays-and-torreys14er2022/photo-8.jpg",
+        "adventures/grays-and-torreys14er2022/photo-9.jpg",
+        "adventures/grays-and-torreys14er2022/photo-10.jpg",
+        "adventures/grays-and-torreys14er2022/photo-11.jpg",
+        "adventures/grays-and-torreys14er2022/photo-12.jpg"
+      ]
     }
   ]
 }

@@ -150,14 +150,16 @@ async function loadAdventuresList() {
         allAdventures = data.adventures || [];
 
         const select = document.getElementById('existing-adventures');
-        select.innerHTML = '<option value="">-- Choose an adventure --</option>';
+        if (select) {
+            select.innerHTML = '<option value="">-- Choose an adventure --</option>';
 
-        allAdventures.forEach((adv, index) => {
-            const option = document.createElement('option');
-            option.value = index;
-            option.textContent = adv.title;
-            select.appendChild(option);
-        });
+            allAdventures.forEach((adv, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = adv.title;
+                select.appendChild(option);
+            });
+        }
     } catch (error) {
         console.error('Error loading adventures:', error);
     }
@@ -292,8 +294,10 @@ async function analyzeGpxFile(file) {
     });
 }
 
-// Handle GPX file selection
-document.getElementById('gpx-files').addEventListener('change', async function(e) {
+// Handle GPX file selection (DEPRECATED - only for legacy adventure form)
+const gpxFilesInput = document.getElementById('gpx-files');
+if (gpxFilesInput) {
+    gpxFilesInput.addEventListener('change', async function(e) {
     const files = Array.from(e.target.files);
 
     for (const file of files) {
@@ -306,7 +310,8 @@ document.getElementById('gpx-files').addEventListener('change', async function(e
     }
 
     displayGpxFiles();
-});
+    });
+}
 
 // Display GPX files (both existing and new)
 function displayGpxFiles() {
@@ -380,30 +385,36 @@ function removeNewGpx(index) {
     displayGpxFiles();
 }
 
-// Setup date range auto-fill
-document.getElementById('adventure-start-date').addEventListener('change', function() {
-    const startDate = this.value;
-    const endDateField = document.getElementById('adventure-end-date');
+// Setup date range auto-fill (DEPRECATED - only for legacy adventure form)
+const adventureStartDateInput = document.getElementById('adventure-start-date');
+if (adventureStartDateInput) {
+    adventureStartDateInput.addEventListener('change', function() {
+        const startDate = this.value;
+        const endDateField = document.getElementById('adventure-end-date');
 
-    if (startDate && !endDateField.value) {
-        // Set end date to start date and set min date
-        endDateField.value = startDate;
-        endDateField.min = startDate;
+        if (startDate && !endDateField.value) {
+            // Set end date to start date and set min date
+            endDateField.value = startDate;
+            endDateField.min = startDate;
 
-        // Automatically focus the end date field
-        setTimeout(() => endDateField.focus(), 100);
-    } else if (startDate) {
-        // Just update the min date
-        endDateField.min = startDate;
-    }
-});
+            // Automatically focus the end date field
+            setTimeout(() => endDateField.focus(), 100);
+        } else if (startDate) {
+            // Just update the min date
+            endDateField.min = startDate;
+        }
+    });
+}
 
-// Handle photo file selection
-document.getElementById('photo-files').addEventListener('change', function(e) {
-    const files = Array.from(e.target.files);
-    selectedPhotos = [...selectedPhotos, ...files];
-    displayPhotoGrid();
-});
+// Handle photo file selection (DEPRECATED - only for legacy adventure form)
+const photoFilesInput = document.getElementById('photo-files');
+if (photoFilesInput) {
+    photoFilesInput.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        selectedPhotos = [...selectedPhotos, ...files];
+        displayPhotoGrid();
+    });
+}
 
 // Setup drag-and-drop for adventure photos
 document.addEventListener('DOMContentLoaded', () => {
@@ -639,8 +650,10 @@ async function deleteAdventure() {
     }
 }
 
-// Handle form submission
-document.getElementById('adventure-form').addEventListener('submit', async function(e) {
+// Handle form submission (DEPRECATED - only for legacy adventure form)
+const adventureForm = document.getElementById('adventure-form');
+if (adventureForm) {
+    adventureForm.addEventListener('submit', async function(e) {
     e.preventDefault();
 
     if (!githubToken) {
@@ -715,7 +728,8 @@ document.getElementById('adventure-form').addEventListener('submit', async funct
         alert(`Upload failed: ${error.message}`);
         console.error('Upload error:', error);
     }
-});
+    });
+}
 
 // Upload adventure to GitHub (handles both create and edit)
 async function uploadAdventureToGitHub(adventure, newGpxFilesList, newPhotos, existingPhotos, remainingGpxFiles) {
@@ -1215,13 +1229,17 @@ function cancelTabEdit() {
 document.addEventListener('DOMContentLoaded', () => {
     const tabForm = document.getElementById('tab-form');
     if (tabForm) {
+        console.log('Tab form found, attaching submit handler');
         tabForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            console.log('Tab form submitted');
 
             const tabId = document.getElementById('tab-id').value.trim();
             const tabLabel = document.getElementById('tab-label').value.trim();
             const tabHeaderText = document.getElementById('tab-header-text').value.trim();
             const tabEnabled = document.getElementById('tab-enabled').checked;
+
+            console.log('Tab data:', { tabId, tabLabel, tabHeaderText, tabEnabled });
 
             // Validate tab ID format
             if (!/^[a-z0-9-]+$/.test(tabId)) {
@@ -1540,8 +1558,10 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
     const homeForm = document.getElementById('home-form');
     if (homeForm) {
+        console.log('Home form found, attaching submit handler');
         homeForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            console.log('Home form submitted');
 
             const updatedConfig = {
                 allProfilePhotos: homePhotos, // All photos in collection

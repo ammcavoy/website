@@ -596,6 +596,24 @@
         "adventures/quandary-ski14er2023/photo-3.png"
       ],
       "youtubeUrl": "https://www.youtube.com/watch?v=Gnw44JIyAtw"
+    },
+    {
+      "id": "democrat-ski14er2024",
+      "title": "Mount Democrat",
+      "categories": [
+        "backcountry-lines",
+        "14ers"
+      ],
+      "date": "2024-05-27",
+      "description": "Slept in the car with Tye. Woke up early and went straight up. This was one of the coolest lines I have ever skied.",
+      "coverPhoto": "adventures/democrat-ski14er2024/cover.jpeg",
+      "gpxFiles": [],
+      "photos": [
+        "adventures/democrat-ski14er2024/cover.jpeg",
+        "adventures/democrat-ski14er2024/photo-1.jpeg",
+        "adventures/democrat-ski14er2024/photo-2.heic"
+      ],
+      "youtubeUrl": "https://www.youtube.com/watch?v=5KoTkbCcA20&t=223s"
     }
   ]
 }

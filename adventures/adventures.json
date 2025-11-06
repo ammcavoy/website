@@ -460,6 +460,31 @@
         "adventures/sopris2024/photo-9.jpeg",
         "adventures/sopris2024/photo-10.jpeg"
       ]
+    },
+    {
+      "id": "mount-bierstadt14er2024",
+      "title": "Mount Bierstadt",
+      "categories": [
+        "day-hikes",
+        "14ers"
+      ],
+      "date": "2024-08-18",
+      "description": "Slept out of the car with Maria, Carly, and MoMo the cat. Honestly it was weird hanging out at camp with a cat, very different than a dog.We woke up late and started moving slowly. I remember this was my first big hike in a long time on this one and it kicked my ass. Those mountains really don't give a shit about you.",
+      "coverPhoto": "adventures/mount-bierstadt14er2024/cover.jpeg",
+      "gpxFiles": [],
+      "photos": [
+        "adventures/mount-bierstadt14er2024/cover.jpeg",
+        "adventures/mount-bierstadt14er2024/photo-1.jpeg",
+        "adventures/mount-bierstadt14er2024/photo-2.jpeg",
+        "adventures/mount-bierstadt14er2024/photo-3.jpeg",
+        "adventures/mount-bierstadt14er2024/photo-4.jpeg",
+        "adventures/mount-bierstadt14er2024/photo-5.jpeg",
+        "adventures/mount-bierstadt14er2024/photo-6.jpeg",
+        "adventures/mount-bierstadt14er2024/photo-7.jpeg",
+        "adventures/mount-bierstadt14er2024/photo-8.jpeg",
+        "adventures/mount-bierstadt14er2024/photo-9.jpeg",
+        "adventures/mount-bierstadt14er2024/photo-10.jpeg"
+      ]
     }
   ]
 }

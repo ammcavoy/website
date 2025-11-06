@@ -144,10 +144,6 @@
     {
       "id": "sherman14er2025",
       "title": "Mount Sherman",
-      "categories": [
-        "day-hikes",
-        "14ers"
-      ],
       "category": "day-hikes",
       "date": "2025-05-24",
       "description": "Went camping (on the ground instead of in the car) with Maria, Marissa, and several other lads. Slept in a little because if was close and not too long of a hike. Had a fun time hiking up, and slid down on our butts for parts of the downhill. Almost as fun as skiing.",
@@ -171,6 +167,10 @@
     {
       "id": "lincoln-ski-14er2025",
       "title": "Mount Lincoln",
+      "categories": [
+        "backcountry-lines",
+        "14ers"
+      ],
       "category": "backcountry-lines",
       "date": "2025-04-26",
       "description": "Maria and I slept in the car and rose with the sun. Had a lovely first couple miles of the accent getting to watch the sun rise while in the clouds was beautiful. We got a little lost on the way up and ended up losing a lot of time climbing over rocks. We were hours behind schedule and exhausted and turned around early. The ski down was a silly ski with several rock band crossings. Always sad turning around before reaching the goal, but a really fun day in the mountains with Maria regardless.",

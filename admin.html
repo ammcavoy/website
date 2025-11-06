@@ -775,14 +775,14 @@
             <form id="home-form">
                 <h3>Profile Photos</h3>
                 <div class="form-group">
-                    <label for="home-photo-files">Upload Profile Photos</label>
+                    <label for="home-photo-files">Upload New Profile Photos</label>
                     <input type="file" id="home-photo-files" accept="image/*" multiple>
-                    <small>Upload new profile photos (leave empty to keep existing photos). Recommended: 2 photos.</small>
+                    <small>Upload additional photos to your collection</small>
                 </div>
 
-                <div id="home-existing-photos" style="margin-bottom: 1.5rem; display: none;">
-                    <label>Current Photos:</label>
-                    <div id="home-photos-preview" class="photo-preview-grid"></div>
+                <div id="home-photos-section" style="margin-top: 1rem;">
+                    <label>Profile Photo Collection (Select 2 photos to display on home page):</label>
+                    <div id="home-photo-grid" class="photo-grid"></div>
                 </div>
 
                 <h3>Text Content</h3>
@@ -793,13 +793,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="home-about-p1">About - Paragraph 1 *</label>
-                    <textarea id="home-about-p1" rows="4" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="home-about-p2">About - Paragraph 2 *</label>
-                    <textarea id="home-about-p2" rows="4" required></textarea>
+                    <label for="home-about">About Section *</label>
+                    <textarea id="home-about" rows="6" required></textarea>
+                    <small>Main about text that appears on the home page</small>
                 </div>
 
                 <h3>Professional Background</h3>

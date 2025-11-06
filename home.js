@@ -4,10 +4,11 @@ async function loadHomeContent() {
         const response = await fetch('home-config.json');
         const config = await response.json();
 
-        // Update profile photos
-        if (config.profilePhotos && config.profilePhotos.length > 0) {
+        // Update profile photos (use selected photos)
+        const photosToDisplay = config.selectedProfilePhotos || config.profilePhotos || [];
+        if (photosToDisplay.length > 0) {
             const profileImages = document.querySelectorAll('.profile-image img');
-            config.profilePhotos.forEach((photoPath, index) => {
+            photosToDisplay.forEach((photoPath, index) => {
                 if (profileImages[index]) {
                     profileImages[index].src = photoPath;
                 }
@@ -20,13 +21,12 @@ async function loadHomeContent() {
             taglineEl.textContent = config.tagline;
         }
 
-        // Update about paragraphs
+        // Update about section
         const aboutText = document.querySelector('.about-text');
-        if (aboutText) {
-            aboutText.innerHTML = `
-                <p>${config.aboutParagraph1 || ''}</p>
-                <p>${config.aboutParagraph2 || ''}</p>
-            `;
+        if (aboutText && config.about) {
+            // Split by double newlines to create paragraphs
+            const paragraphs = config.about.split('\n\n').map(p => `<p>${p}</p>`).join('');
+            aboutText.innerHTML = paragraphs;
         }
 
         // Update professional background

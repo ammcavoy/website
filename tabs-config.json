@@ -48,6 +48,20 @@
           "icon": ""
         }
       ]
+    },
+    {
+      "id": "asd",
+      "label": "asd",
+      "dataFile": "asd/asd.json",
+      "enabled": true,
+      "headerText": "asd",
+      "subtypes": [
+        {
+          "id": "asd",
+          "label": "asd",
+          "icon": ""
+        }
+      ]
     }
   ]
 }

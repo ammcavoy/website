@@ -1,0 +1,18 @@
+{
+  "entries": [
+    {
+      "id": "test-test",
+      "title": "Test 1",
+      "categories": [
+        "type1"
+      ],
+      "date": "2025-11-04",
+      "description": "test",
+      "coverPhoto": "test/test-test/cover.jpg",
+      "gpxFiles": [],
+      "photos": [
+        "test/test-test/cover.jpg"
+      ]
+    }
+  ]
+}

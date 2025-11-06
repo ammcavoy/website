@@ -1,23 +1,36 @@
 // Admin script with GitHub API integration and edit functionality
+
+// ===== DEPRECATED ADVENTURE-SPECIFIC VARIABLES =====
+// These are kept for backward compatibility with legacy-adventures.js
+// All new tabs use content-manager.js instead
 let selectedPhotos = [];
 let existingPhotos = []; // For edit mode
 let coverPhotoIndex = 0;
-let githubToken = '';
-let githubConfig = {
-    owner: '',
-    repo: '',
-    branch: 'main'
-};
 let editMode = false;
 let currentAdventure = null;
 let allAdventures = [];
 let existingGpxFiles = [];
 let newGpxFiles = [];
 let gpxFilesToRemove = [];
+// ===== END DEPRECATED SECTION =====
+
+// Generic variables used by all systems
+let githubToken = '';
+let githubConfig = {
+    owner: '',
+    repo: '',
+    branch: 'main'
+};
 
 // Tab management variables
 let tabsConfig = null;
 let editingTabIndex = -1;
+
+// Home page management variables
+let homeConfig = null;
+let homePhotos = [];
+let homePhotosToDelete = [];
+let newHomePhotos = [];
 
 // Load saved token and adventures on page load
 window.addEventListener('DOMContentLoaded', () => {
@@ -103,6 +116,11 @@ function loadGitHubConfig() {
         throw new Error('GitHub repository not configured. Please save your token first.');
     }
 }
+
+// ===== DEPRECATED ADVENTURE-SPECIFIC FUNCTIONS =====
+// The following functions are DEPRECATED and only used by legacy-adventures.js
+// All new tabs use TabContentManager class in content-manager.js
+// These are kept for backward compatibility only
 
 // Switch between create and edit mode
 function switchMode(mode) {
@@ -1018,6 +1036,8 @@ async function loadAdventureCategoryOptions() {
     }
 }
 
+// ===== END DEPRECATED ADVENTURE FUNCTIONS =====
+
 // ===== TAB MANAGEMENT FUNCTIONS =====
 
 // Switch between admin sections
@@ -1025,17 +1045,27 @@ function switchAdminTab(tab) {
     document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.admin-section').forEach(section => section.style.display = 'none');
 
+    // Find and activate the button that was clicked
+    const clickedBtn = event?.target;
+    if (clickedBtn) {
+        clickedBtn.classList.add('active');
+    }
+
     if (tab === 'home') {
-        document.querySelector('.admin-tab-btn:nth-child(1)').classList.add('active');
         document.getElementById('admin-home-section').style.display = 'block';
         loadHomeConfig();
     } else if (tab === 'tabs') {
-        document.querySelector('.admin-tab-btn:nth-child(2)').classList.add('active');
         document.getElementById('admin-tabs-section').style.display = 'block';
         loadTabsConfig();
     } else if (tab === 'adventure') {
-        document.querySelector('.admin-tab-btn:nth-child(3)').classList.add('active');
         document.getElementById('admin-adventure-section').style.display = 'block';
+    } else {
+        // Handle dynamic tab sections
+        const sectionId = `admin-${tab}-section`;
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.style.display = 'block';
+        }
     }
 }
 
@@ -1324,20 +1354,18 @@ async function saveTabsConfig() {
 
 // ===== HOME PAGE MANAGEMENT FUNCTIONS =====
 
-let homeConfig = null;
-let homePhotos = [];
-let homePhotosToDelete = [];
-let newHomePhotos = [];
-
 // Load home page configuration
 async function loadHomeConfig() {
     try {
         const response = await fetch('home-config.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         homeConfig = await response.json();
         populateHomeForm();
     } catch (error) {
         console.error('Error loading home config:', error);
-        alert('Error loading home page configuration');
+        alert('Error loading home page configuration: ' + error.message);
     }
 }
 

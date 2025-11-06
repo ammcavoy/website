@@ -42,17 +42,23 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 100%;
+    padding: 0 2rem;
 }
 
 .nav-brand {
     font-size: 1.5rem;
     font-weight: bold;
+    margin: 0;
+    padding: 0;
 }
 
 .nav-menu {
     display: flex;
     list-style: none;
     gap: 2rem;
+    margin: 0;
+    padding: 0;
 }
 
 .nav-menu a {
@@ -78,6 +84,11 @@ body {
     position: sticky;
     top: 57px; /* Height of main navbar */
     z-index: 99;
+}
+
+.subtype-nav .container {
+    max-width: 100%;
+    padding: 0 2rem;
 }
 
 .subtype-list {
@@ -230,7 +241,7 @@ body {
 
 /* Adventures Section */
 .adventures {
-    padding: 5rem 0;
+    padding: 2rem 0 5rem 0;
     background-color: var(--light-color);
 }
 

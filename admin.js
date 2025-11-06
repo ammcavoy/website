@@ -943,6 +943,7 @@ function editTab(index) {
     document.getElementById('tab-id').value = tab.id;
     document.getElementById('tab-id').disabled = true; // Can't change ID when editing
     document.getElementById('tab-label').value = tab.label;
+    document.getElementById('tab-header-text').value = tab.headerText || '';
     document.getElementById('tab-enabled').checked = tab.enabled;
 
     // Clear and populate subtypes
@@ -1020,6 +1021,7 @@ function cancelTabEdit() {
     document.getElementById('tab-form').reset();
     document.getElementById('tab-id').disabled = false;
     document.getElementById('editing-tab-id').value = '';
+    document.getElementById('tab-header-text').value = '';
     document.getElementById('subtypes-container').innerHTML = '';
 }
 
@@ -1032,6 +1034,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const tabId = document.getElementById('tab-id').value.trim();
             const tabLabel = document.getElementById('tab-label').value.trim();
+            const tabHeaderText = document.getElementById('tab-header-text').value.trim();
             const tabEnabled = document.getElementById('tab-enabled').checked;
 
             // Validate tab ID format
@@ -1063,6 +1066,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 label: tabLabel,
                 dataFile: `${tabId}/${tabId}.json`,
                 enabled: tabEnabled,
+                headerText: tabHeaderText,
                 subtypes: subtypes
             };
 

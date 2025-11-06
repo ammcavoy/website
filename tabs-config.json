@@ -5,6 +5,7 @@
       "label": "Adventures",
       "dataFile": "adventures/adventures.json",
       "enabled": true,
+      "headerText": "Explore my outdoor adventures across Colorado and beyond. From challenging summit hikes to peaceful backcountry camping, each adventure tells a unique story of exploration and connection with nature.",
       "subtypes": [
         {
           "id": "day-hikes",

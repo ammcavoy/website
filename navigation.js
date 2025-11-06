@@ -50,6 +50,19 @@ async function initNavigation() {
     if (currentTab && currentTab.subtypes && currentTab.subtypes.length > 0) {
         renderSubtypeNavigation(currentTab, currentSubtype);
     }
+
+    // Load header text if on a tab page
+    if (currentTab && currentTab.headerText) {
+        loadHeaderText(currentTab.headerText);
+    }
+}
+
+// Load header text for the page
+function loadHeaderText(headerText) {
+    const headerElement = document.getElementById('page-header-text');
+    if (headerElement && headerText) {
+        headerElement.textContent = headerText;
+    }
 }
 
 // Render main navigation

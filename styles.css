@@ -65,6 +65,54 @@ body {
     color: var(--accent-color);
 }
 
+.nav-menu a.active {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+/* Subtype Navigation */
+.subtype-nav {
+    background-color: var(--primary-color);
+    padding: 0.75rem 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 57px; /* Height of main navbar */
+    z-index: 99;
+}
+
+.subtype-list {
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding: 0;
+    margin: 0;
+}
+
+.subtype-list li {
+    white-space: nowrap;
+}
+
+.subtype-list a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.subtype-list a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--white);
+}
+
+.subtype-list a.active {
+    background-color: var(--white);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
 /* Hero Section */
 .hero {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
@@ -233,8 +281,27 @@ body {
     height: 500px;
 }
 
+.adventure-placeholder {
+    width: 100%;
+    height: 500px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    opacity: 0.6;
+}
+
 .card-content {
     padding: 1rem 1.5rem 1.5rem 1.5rem;
+}
+
+.adventure-category-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .adventure-category-badge {

@@ -167,10 +167,6 @@
     {
       "id": "lincoln-ski-14er2025",
       "title": "Mount Lincoln",
-      "categories": [
-        "backcountry-lines",
-        "14ers"
-      ],
       "category": "backcountry-lines",
       "date": "2025-04-26",
       "description": "Maria and I slept in the car and rose with the sun. Had a lovely first couple miles of the accent getting to watch the sun rise while in the clouds was beautiful. We got a little lost on the way up and ended up losing a lot of time climbing over rocks. We were hours behind schedule and exhausted and turned around early. The ski down was a silly ski with several rock band crossings. Always sad turning around before reaching the goal, but a really fun day in the mountains with Maria regardless.",
@@ -235,7 +231,11 @@
     {
       "id": "bettybearhut2025",
       "title": "Betty Bear Hut",
-      "category": "hut-trips",
+      "categories": [
+        "backcountry-lines",
+        "hut-trips"
+      ],
+      "category": "backcountry-lines",
       "startDate": "2025-01-06",
       "endDate": "2025-01-08",
       "description": "A truly incredible hut. The tour in was a lovely snowmobile ride for the first couple miles, and the last mile was an uphill battle from hell with the sled. That last mile is truly something I would never wish upon anyone. Once we arrived we realized that we were on a hut trip in horrible avalanche conditions. We didn't get to ski any of the lines that we wanted to but enjoyed the hut and each other all the same. We drank a lot, smoked a little, and laughed a lot. A hut with incredible views is better with incredible friends.",

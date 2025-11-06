@@ -459,21 +459,6 @@
         "adventures/sopris2024/photo-9.jpeg",
         "adventures/sopris2024/photo-10.jpeg"
       ]
-    },
-    {
-      "id": "test-upload",
-      "title": "Test",
-      "categories": [
-        "day-hikes"
-      ],
-      "date": "2025-11-04",
-      "description": "test",
-      "coverPhoto": "adventures/test-upload/cover.jpg",
-      "gpxFiles": [],
-      "photos": [
-        "adventures/test-upload/cover.jpg"
-      ],
-      "youtubeUrl": "https://www.youtube.com/watch?v=FWSM8pDKYkU"
     }
   ]
 }

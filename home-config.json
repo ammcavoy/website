@@ -1,0 +1,20 @@
+{
+  "profilePhotos": [
+    "photos/profile-1.jpg",
+    "photos/profile-2.jpg"
+  ],
+  "tagline": "Software Engineer | Outdoor Adventurer | Explorer",
+  "aboutParagraph1": "I'm a Software Engineer based in Denver, Colorado, where I've found the perfect balance between my passion for technology and love for the outdoors. Currently working at NextWorld, I specialize in building enterprise-level applications with Java and distributed systems.",
+  "aboutParagraph2": "When I'm not designing caching frameworks or building connector integrations, you'll find me exploring Colorado's incredible mountains, trails, and wilderness areas. This website is my space to share both my technical journey and outdoor adventures.",
+  "professionalBackground": {
+    "current": "Software Engineer at NextWorld (Denver, CO)",
+    "education": "Computer Engineering & Computer Science, UW-Madison",
+    "specialties": "Java, Distributed Systems, API Integration, Full-Stack Development",
+    "technologies": "Spring, React, PostgreSQL, AWS, Linux"
+  },
+  "contact": {
+    "email": "Adam@mcavoys.org",
+    "phone": "(920) 376-3715",
+    "location": "Denver, Colorado"
+  }
+}

@@ -608,6 +608,7 @@
         </div>
 
         <div class="admin-tabs">
+            <button class="admin-tab-btn" onclick="switchAdminTab('home')">Edit Home Page</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('tabs')">Manage Tabs</button>
             <button class="admin-tab-btn active" onclick="switchAdminTab('adventure')">Manage Adventures</button>
         </div>
@@ -764,6 +765,84 @@
                     </form>
                 </div>
             </div>
+        </div>
+
+        <!-- Home Page Editing Section -->
+        <div id="admin-home-section" class="admin-section" style="display: none;">
+            <h2>Edit Home Page</h2>
+            <p>Update the text content on your home page.</p>
+
+            <form id="home-form">
+                <h3>Profile Photos</h3>
+                <div class="form-group">
+                    <label for="home-photo-files">Upload Profile Photos</label>
+                    <input type="file" id="home-photo-files" accept="image/*" multiple>
+                    <small>Upload new profile photos (leave empty to keep existing photos). Recommended: 2 photos.</small>
+                </div>
+
+                <div id="home-existing-photos" style="margin-bottom: 1.5rem; display: none;">
+                    <label>Current Photos:</label>
+                    <div id="home-photos-preview" class="photo-preview-grid"></div>
+                </div>
+
+                <h3>Text Content</h3>
+                <div class="form-group">
+                    <label for="home-tagline">Tagline *</label>
+                    <input type="text" id="home-tagline" placeholder="e.g., Software Engineer | Outdoor Adventurer | Explorer" required>
+                    <small>Appears below your name on the home page</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="home-about-p1">About - Paragraph 1 *</label>
+                    <textarea id="home-about-p1" rows="4" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="home-about-p2">About - Paragraph 2 *</label>
+                    <textarea id="home-about-p2" rows="4" required></textarea>
+                </div>
+
+                <h3>Professional Background</h3>
+
+                <div class="form-group">
+                    <label for="home-current">Current Position *</label>
+                    <input type="text" id="home-current" placeholder="e.g., Software Engineer at Company (Location)" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="home-education">Education *</label>
+                    <input type="text" id="home-education" placeholder="e.g., Computer Engineering & Computer Science, University" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="home-specialties">Specialties *</label>
+                    <input type="text" id="home-specialties" placeholder="e.g., Java, Distributed Systems, API Integration" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="home-technologies">Technologies *</label>
+                    <input type="text" id="home-technologies" placeholder="e.g., Spring, React, PostgreSQL, AWS, Linux" required>
+                </div>
+
+                <h3>Contact Information</h3>
+
+                <div class="form-group">
+                    <label for="home-email">Email *</label>
+                    <input type="email" id="home-email" placeholder="e.g., your@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="home-phone">Phone *</label>
+                    <input type="tel" id="home-phone" placeholder="e.g., (123) 456-7890" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="home-location">Location *</label>
+                    <input type="text" id="home-location" placeholder="e.g., City, State" required>
+                </div>
+
+                <button type="submit" class="submit-btn">Save Home Page Changes</button>
+            </form>
         </div>
     </div>
 

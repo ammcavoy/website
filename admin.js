@@ -871,12 +871,16 @@ function switchAdminTab(tab) {
     document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.admin-section').forEach(section => section.style.display = 'none');
 
-    if (tab === 'tabs') {
+    if (tab === 'home') {
         document.querySelector('.admin-tab-btn:nth-child(1)').classList.add('active');
+        document.getElementById('admin-home-section').style.display = 'block';
+        loadHomeConfig();
+    } else if (tab === 'tabs') {
+        document.querySelector('.admin-tab-btn:nth-child(2)').classList.add('active');
         document.getElementById('admin-tabs-section').style.display = 'block';
         loadTabsConfig();
     } else if (tab === 'adventure') {
-        document.querySelector('.admin-tab-btn:nth-child(2)').classList.add('active');
+        document.querySelector('.admin-tab-btn:nth-child(3)').classList.add('active');
         document.getElementById('admin-adventure-section').style.display = 'block';
     }
 }
@@ -1156,6 +1160,208 @@ async function saveTabsConfig() {
         });
 
         showProgress('Complete!', 100);
+        setTimeout(() => hideProgress(), 1000);
+
+    } catch (error) {
+        hideProgress();
+        throw error;
+    }
+}
+
+// ===== HOME PAGE MANAGEMENT FUNCTIONS =====
+
+let homeConfig = null;
+
+// Load home page configuration
+async function loadHomeConfig() {
+    try {
+        const response = await fetch('home-config.json');
+        homeConfig = await response.json();
+        populateHomeForm();
+    } catch (error) {
+        console.error('Error loading home config:', error);
+        alert('Error loading home page configuration');
+    }
+}
+
+// Populate home page form with current values
+function populateHomeForm() {
+    if (!homeConfig) return;
+
+    document.getElementById('home-tagline').value = homeConfig.tagline || '';
+    document.getElementById('home-about-p1').value = homeConfig.aboutParagraph1 || '';
+    document.getElementById('home-about-p2').value = homeConfig.aboutParagraph2 || '';
+
+    document.getElementById('home-current').value = homeConfig.professionalBackground?.current || '';
+    document.getElementById('home-education').value = homeConfig.professionalBackground?.education || '';
+    document.getElementById('home-specialties').value = homeConfig.professionalBackground?.specialties || '';
+    document.getElementById('home-technologies').value = homeConfig.professionalBackground?.technologies || '';
+
+    document.getElementById('home-email').value = homeConfig.contact?.email || '';
+    document.getElementById('home-phone').value = homeConfig.contact?.phone || '';
+    document.getElementById('home-location').value = homeConfig.contact?.location || '';
+
+    // Display existing photos
+    if (homeConfig.profilePhotos && homeConfig.profilePhotos.length > 0) {
+        const container = document.getElementById('home-existing-photos');
+        const preview = document.getElementById('home-photos-preview');
+        container.style.display = 'block';
+        preview.innerHTML = '';
+
+        homeConfig.profilePhotos.forEach((photo, index) => {
+            const img = document.createElement('img');
+            img.src = photo;
+            img.style.width = '150px';
+            img.style.height = '150px';
+            img.style.objectFit = 'cover';
+            img.style.borderRadius = '8px';
+            img.style.margin = '0.5rem';
+            preview.appendChild(img);
+        });
+    }
+}
+
+// Handle home form submission
+document.addEventListener('DOMContentLoaded', () => {
+    const homeForm = document.getElementById('home-form');
+    if (homeForm) {
+        homeForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Get selected photos
+            const photoInput = document.getElementById('home-photo-files');
+            const newPhotos = Array.from(photoInput.files || []);
+
+            const updatedConfig = {
+                profilePhotos: homeConfig?.profilePhotos || [], // Keep existing if no new photos
+                tagline: document.getElementById('home-tagline').value.trim(),
+                aboutParagraph1: document.getElementById('home-about-p1').value.trim(),
+                aboutParagraph2: document.getElementById('home-about-p2').value.trim(),
+                professionalBackground: {
+                    current: document.getElementById('home-current').value.trim(),
+                    education: document.getElementById('home-education').value.trim(),
+                    specialties: document.getElementById('home-specialties').value.trim(),
+                    technologies: document.getElementById('home-technologies').value.trim()
+                },
+                contact: {
+                    email: document.getElementById('home-email').value.trim(),
+                    phone: document.getElementById('home-phone').value.trim(),
+                    location: document.getElementById('home-location').value.trim()
+                }
+            };
+
+            try {
+                await saveHomeConfig(updatedConfig, newPhotos);
+                alert('Home page updated successfully!');
+                // Reload to show new photos
+                await loadHomeConfig();
+            } catch (error) {
+                alert('Error saving home page: ' + error.message);
+            }
+        });
+    }
+});
+
+// Save home config to GitHub
+async function saveHomeConfig(config, newPhotos = []) {
+    if (!githubToken) {
+        throw new Error('Please save your GitHub token first');
+    }
+
+    loadGitHubConfig();
+    showProgress('Saving home page...', 0);
+
+    try {
+        // Get current branch reference
+        showProgress('Getting repository info...', 10);
+        const refData = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/refs/heads/${githubConfig.branch}`);
+        const latestCommitSha = refData.object.sha;
+
+        // Get the current commit
+        showProgress('Reading current commit...', 20);
+        const commitData = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/commits/${latestCommitSha}`);
+        const treeSha = commitData.tree.sha;
+
+        const treeItems = [];
+
+        // Upload new photos if provided
+        if (newPhotos.length > 0) {
+            showProgress('Uploading photos...', 30);
+            const photoPaths = [];
+
+            for (let i = 0; i < newPhotos.length; i++) {
+                const photo = newPhotos[i];
+                const photoPath = `photos/profile-${i + 1}.jpg`;
+
+                // Read photo as base64
+                const photoBase64 = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+                    reader.readAsDataURL(photo);
+                });
+
+                // Create blob for photo
+                const photoBlob = await createBlob(photoBase64);
+
+                treeItems.push({
+                    path: photoPath,
+                    sha: photoBlob.sha,
+                    mode: '100644',
+                    type: 'blob'
+                });
+
+                photoPaths.push(photoPath);
+            }
+
+            // Update config with new photo paths
+            config.profilePhotos = photoPaths;
+        }
+
+        // Create blob for home-config.json
+        showProgress('Uploading configuration...', 60);
+        const configContent = JSON.stringify(config, null, 2);
+        const configBase64 = btoa(unescape(encodeURIComponent(configContent)));
+        const configBlob = await createBlob(configBase64);
+
+        treeItems.push({
+            path: 'home-config.json',
+            sha: configBlob.sha,
+            mode: '100644',
+            type: 'blob'
+        });
+
+        // Create new tree
+        showProgress('Creating file tree...', 70);
+        const newTree = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/trees`, {
+            method: 'POST',
+            body: JSON.stringify({
+                base_tree: treeSha,
+                tree: treeItems
+            })
+        });
+
+        // Create new commit
+        showProgress('Creating commit...', 85);
+        const newCommit = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/commits`, {
+            method: 'POST',
+            body: JSON.stringify({
+                message: 'Update home page configuration',
+                tree: newTree.sha,
+                parents: [latestCommitSha]
+            })
+        });
+
+        // Update branch reference
+        showProgress('Pushing to GitHub...', 95);
+        await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/refs/heads/${githubConfig.branch}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                sha: newCommit.sha
+            })
+        });
+
+        showProgress('Complete!', 100);
+        homeConfig = config;
         setTimeout(() => hideProgress(), 1000);
 
     } catch (error) {

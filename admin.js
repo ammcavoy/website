@@ -98,6 +98,72 @@ function loadGitHubConfig() {
     }
 }
 
+// GitHub API Helper
+
+async function githubAPI(endpoint, options = {}) {
+    loadGitHubConfig();
+
+    const url = endpoint.startsWith('http') ? endpoint : `https://api.github.com${endpoint}`;
+
+    const response = await fetch(url, {
+        ...options,
+        headers: {
+            'Authorization': `token ${githubToken}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    });
+
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || `GitHub API error: ${response.status}`);
+    }
+
+    return response.json();
+}
+
+async function createBlob(content) {
+    loadGitHubConfig();
+    return await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/blobs`, {
+        method: 'POST',
+        body: JSON.stringify({
+            content: content,
+            encoding: 'base64'
+        })
+    });
+}
+
+// File Helper Functions
+
+function readFileAsBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const base64 = reader.result.split(',')[1];
+            resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+// Progress Overlay Functions
+
+function showProgress(message, percent) {
+    const overlay = document.getElementById('progress-overlay');
+    const fill = document.getElementById('progress-bar-fill');
+    const messageEl = document.getElementById('progress-message');
+
+    if (overlay) overlay.classList.add('active');
+    if (fill) fill.style.width = `${percent}%`;
+    if (messageEl) messageEl.textContent = message;
+}
+
+function hideProgress() {
+    const overlay = document.getElementById('progress-overlay');
+    if (overlay) overlay.classList.remove('active');
+}
 
 // Tab Management System
 

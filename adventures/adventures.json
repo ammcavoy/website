@@ -47,7 +47,8 @@
       "id": "14er-antero",
       "title": "Mount Antero",
       "categories": [
-        "day-hikes"
+        "day-hikes",
+        "14ers"
       ],
       "date": "2025-09-01",
       "description": "Did some car camping, saw a pretty sun rise, and most importantly enjoyed a cig at the summit. God bless.",
@@ -99,7 +100,8 @@
       "id": "decalibron14ers2025",
       "title": "DeCaLiBron Loop",
       "categories": [
-        "day-hikes"
+        "day-hikes",
+        "14ers"
       ],
       "date": "2025-06-14",
       "description": "Slept in the car with the lovely lad Zach. Woke up and went up, had the honor of summiting 4 14ers in a single day. Lovely making it to the top of Lincoln after the attempt on skis in the spring. Got to see a little goat and some lovely snow covered ridge lines. Overall a nice hike with lovely views.",
@@ -152,7 +154,8 @@
       "id": "sherman14er2025",
       "title": "Mount Sherman",
       "categories": [
-        "day-hikes"
+        "day-hikes",
+        "14ers"
       ],
       "date": "2025-05-24",
       "description": "Went camping (on the ground instead of in the car) with Maria, Marissa, and several other lads. Slept in a little because if was close and not too long of a hike. Had a fun time hiking up, and slid down on our butts for parts of the downhill. Almost as fun as skiing.",
@@ -177,7 +180,8 @@
       "id": "lincoln-ski-14er2025",
       "title": "Mount Lincoln",
       "categories": [
-        "backcountry-lines"
+        "backcountry-lines",
+        "14ers"
       ],
       "date": "2025-04-26",
       "description": "Maria and I slept in the car and rose with the sun. Had a lovely first couple miles of the accent getting to watch the sun rise while in the clouds was beautiful. We got a little lost on the way up and ended up losing a lot of time climbing over rocks. We were hours behind schedule and exhausted and turned around early. The ski down was a silly ski with several rock band crossings. Always sad turning around before reaching the goal, but a really fun day in the mountains with Maria regardless.",
@@ -341,6 +345,7 @@
       "id": "sectionhousehut2024",
       "title": "Section House Hut",
       "categories": [
+        "backcountry-lines",
         "hut-trips"
       ],
       "startDate": "2024-04-06",

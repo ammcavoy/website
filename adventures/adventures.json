@@ -577,6 +577,25 @@
         "adventures/goodwin-green-hut2023/photo-16.jpg"
       ],
       "youtubeUrl": "https://www.youtube.com/watch?v=gP7fmke9LVE"
+    },
+    {
+      "id": "quandary-ski14er2023",
+      "title": "Quandary Peak",
+      "categories": [
+        "backcountry-lines",
+        "14ers"
+      ],
+      "date": "2023-06-18",
+      "description": "Skiing the first 14er. What a journey, some of the best backcountry skiing I've had to date.",
+      "coverPhoto": "adventures/quandary-ski14er2023/cover.png",
+      "gpxFiles": [],
+      "photos": [
+        "adventures/quandary-ski14er2023/cover.png",
+        "adventures/quandary-ski14er2023/photo-1.png",
+        "adventures/quandary-ski14er2023/photo-2.png",
+        "adventures/quandary-ski14er2023/photo-3.png"
+      ],
+      "youtubeUrl": "https://www.youtube.com/watch?v=Gnw44JIyAtw"
     }
   ]
 }

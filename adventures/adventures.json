@@ -326,7 +326,11 @@
     {
       "id": "sectionhousehut2024",
       "title": "Section House Hut",
-      "category": "hut-trips",
+      "categories": [
+        "backcountry-lines",
+        "hut-trips"
+      ],
+      "category": "backcountry-lines",
       "startDate": "2024-04-06",
       "endDate": "2024-04-10",
       "description": "One of the best hut trips I've ever had the joy of being on. Got to ski the legendary Baldy Mountain outside of Breckenridge completing something that I've been eying up since I was a wee child. Drank a little too much and hiked a little too far, but I would do it all again in a heart beat. Huge shout out to almost everyone on this hut trip for skiing their first peaks above 13,000 ft.",

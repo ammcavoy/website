@@ -92,10 +92,6 @@
     {
       "id": "decalibron14ers2025",
       "title": "DeCaLiBron Loop",
-      "categories": [
-        "day-hikes",
-        "14ers"
-      ],
       "category": "day-hikes",
       "date": "2025-06-14",
       "description": "Slept in the car with the lovely lad Zach. Woke up and went up, had the honor of summiting 4 14ers in a single day. Lovely making it to the top of Lincoln after the attempt on skis in the spring. Got to see a little goat and some lovely snow covered ridge lines. Overall a nice hike with lovely views.",
@@ -120,6 +116,10 @@
     {
       "id": "massive14er2025",
       "title": "Mount Massive",
+      "categories": [
+        "day-hikes",
+        "14ers"
+      ],
       "category": "day-hikes",
       "date": "2025-08-09",
       "description": "Slept in the car with Maria, a truly lovely experience as always. Woke up at went up. Saw some good flowers and good dogs throughout the hike. This one was a fast one for sure. Overall a great 14er.",

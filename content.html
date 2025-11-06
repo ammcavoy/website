@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adventures - Adam McAvoy</title>
+    <title id="page-title">Loading...</title>
     <link rel="stylesheet" href="styles.css">
     <!-- Leaflet CSS for maps -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -13,23 +13,18 @@
         <div class="container">
             <div class="nav-brand">Adam McAvoy</div>
             <ul class="nav-menu">
-                <li><a href="index.html#home">Home</a></li>
-                <li><a href="adventures.html">Adventures</a></li>
-                <li><a href="index.html#contact">Contact</a></li>
+                <!-- Navigation loaded dynamically -->
             </ul>
         </div>
     </nav>
 
     <section class="adventures">
         <div class="container">
-            <h2>Adventures</h2>
-            <p class="section-intro">
-                Explore my outdoor adventures across Colorado and beyond. From challenging summit hikes
-                to peaceful backcountry camping, each adventure tells a unique story of exploration
-                and connection with nature.
+            <p class="section-intro" id="page-header-text">
+                <!-- Header text loaded from tabs-config.json -->
             </p>
-            <div id="adventures-grid" class="adventures-grid">
-                <div class="loading-message">Loading adventures...</div>
+            <div id="content-grid" class="adventures-grid">
+                <div class="loading-message">Loading...</div>
             </div>
         </div>
     </section>
@@ -46,7 +41,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
     <!-- Navigation Script -->
     <script src="navigation.js"></script>
-    <!-- Legacy Adventures Script (deprecated - use content.html instead) -->
-    <script src="legacy-adventures.js"></script>
+    <!-- Generic Content Loader -->
+    <script src="content-loader.js"></script>
 </body>
 </html>

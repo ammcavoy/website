@@ -1,23 +1,36 @@
 // Admin script with GitHub API integration and edit functionality
+
+// ===== DEPRECATED ADVENTURE-SPECIFIC VARIABLES =====
+// These are kept for backward compatibility with legacy-adventures.js
+// All new tabs use content-manager.js instead
 let selectedPhotos = [];
 let existingPhotos = []; // For edit mode
 let coverPhotoIndex = 0;
-let githubToken = '';
-let githubConfig = {
-    owner: '',
-    repo: '',
-    branch: 'main'
-};
 let editMode = false;
 let currentAdventure = null;
 let allAdventures = [];
 let existingGpxFiles = [];
 let newGpxFiles = [];
 let gpxFilesToRemove = [];
+// ===== END DEPRECATED SECTION =====
+
+// Generic variables used by all systems
+let githubToken = '';
+let githubConfig = {
+    owner: '',
+    repo: '',
+    branch: 'main'
+};
 
 // Tab management variables
 let tabsConfig = null;
 let editingTabIndex = -1;
+
+// Home page management variables
+let homeConfig = null;
+let homePhotos = [];
+let homePhotosToDelete = [];
+let newHomePhotos = [];
 
 // Load saved token and adventures on page load
 window.addEventListener('DOMContentLoaded', () => {
@@ -103,6 +116,11 @@ function loadGitHubConfig() {
         throw new Error('GitHub repository not configured. Please save your token first.');
     }
 }
+
+// ===== DEPRECATED ADVENTURE-SPECIFIC FUNCTIONS =====
+// The following functions are DEPRECATED and only used by legacy-adventures.js
+// All new tabs use TabContentManager class in content-manager.js
+// These are kept for backward compatibility only
 
 // Switch between create and edit mode
 function switchMode(mode) {
@@ -866,6 +884,8 @@ async function loadAdventureCategoryOptions() {
     }
 }
 
+// ===== END DEPRECATED ADVENTURE FUNCTIONS =====
+
 // ===== TAB MANAGEMENT FUNCTIONS =====
 
 // Switch between admin sections
@@ -873,13 +893,27 @@ function switchAdminTab(tab) {
     document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.admin-section').forEach(section => section.style.display = 'none');
 
-    if (tab === 'tabs') {
-        document.querySelector('.admin-tab-btn:nth-child(1)').classList.add('active');
+    // Find and activate the button that was clicked
+    const clickedBtn = event?.target;
+    if (clickedBtn) {
+        clickedBtn.classList.add('active');
+    }
+
+    if (tab === 'home') {
+        document.getElementById('admin-home-section').style.display = 'block';
+        loadHomeConfig();
+    } else if (tab === 'tabs') {
         document.getElementById('admin-tabs-section').style.display = 'block';
         loadTabsConfig();
     } else if (tab === 'adventure') {
-        document.querySelector('.admin-tab-btn:nth-child(2)').classList.add('active');
         document.getElementById('admin-adventure-section').style.display = 'block';
+    } else {
+        // Handle dynamic tab sections
+        const sectionId = `admin-${tab}-section`;
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.style.display = 'block';
+        }
     }
 }
 
@@ -1154,6 +1188,346 @@ async function saveTabsConfig() {
         });
 
         showProgress('Complete!', 100);
+        setTimeout(() => hideProgress(), 1000);
+
+    } catch (error) {
+        hideProgress();
+        throw error;
+    }
+}
+
+// ===== HOME PAGE MANAGEMENT FUNCTIONS =====
+
+// Load home page configuration
+async function loadHomeConfig() {
+    try {
+        const response = await fetch('home-config.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        homeConfig = await response.json();
+        populateHomeForm();
+    } catch (error) {
+        console.error('Error loading home config:', error);
+        alert('Error loading home page configuration: ' + error.message);
+    }
+}
+
+// Populate home page form with current values
+function populateHomeForm() {
+    if (!homeConfig) return;
+
+    document.getElementById('home-tagline').value = homeConfig.tagline || '';
+    document.getElementById('home-about').value = homeConfig.about || homeConfig.aboutParagraph1 || '';
+
+    document.getElementById('home-current').value = homeConfig.professionalBackground?.current || '';
+    document.getElementById('home-education').value = homeConfig.professionalBackground?.education || '';
+    document.getElementById('home-specialties').value = homeConfig.professionalBackground?.specialties || '';
+    document.getElementById('home-technologies').value = homeConfig.professionalBackground?.technologies || '';
+
+    document.getElementById('home-email').value = homeConfig.contact?.email || '';
+    document.getElementById('home-phone').value = homeConfig.contact?.phone || '';
+    document.getElementById('home-location').value = homeConfig.contact?.location || '';
+
+    // Initialize photo collection
+    homePhotos = [...(homeConfig.allProfilePhotos || homeConfig.profilePhotos || [])];
+    homePhotosToDelete = [];
+    newHomePhotos = [];
+    displayHomePhotoGrid();
+}
+
+// Display home page photo grid
+function displayHomePhotoGrid() {
+    const grid = document.getElementById('home-photo-grid');
+    grid.innerHTML = '';
+
+    const allPhotos = [...homePhotos, ...newHomePhotos];
+    const selectedPhotos = homeConfig?.selectedProfilePhotos || homeConfig?.profilePhotos || [];
+
+    allPhotos.forEach((photo, index) => {
+        const isExisting = index < homePhotos.length;
+        const photoPath = isExisting ? photo : URL.createObjectURL(photo);
+        const actualPath = isExisting ? photo : `photos/profile-${Date.now()}-${index}.jpg`;
+        const isSelected = selectedPhotos.includes(isExisting ? photo : actualPath);
+
+        const photoDiv = document.createElement('div');
+        photoDiv.className = 'photo-item';
+        if (isSelected) photoDiv.classList.add('selected');
+
+        photoDiv.innerHTML = `
+            <img src="${photoPath}" alt="Profile photo ${index + 1}">
+            <div class="photo-actions">
+                <button type="button" class="photo-select-btn" onclick="toggleHomePhotoSelection(${index}, ${isExisting})">
+                    ${isSelected ? 'Selected ✓' : 'Select'}
+                </button>
+                <button type="button" class="photo-delete-btn" onclick="deleteHomePhoto(${index}, ${isExisting})">Delete</button>
+            </div>
+        `;
+
+        grid.appendChild(photoDiv);
+    });
+
+    if (allPhotos.length === 0) {
+        grid.innerHTML = '<p style="color: #999;">No photos uploaded yet. Upload photos above to get started.</p>';
+    }
+}
+
+// Toggle home photo selection
+function toggleHomePhotoSelection(index, isExisting) {
+    const allPhotos = [...homePhotos, ...newHomePhotos];
+    let selectedPhotos = homeConfig?.selectedProfilePhotos || homeConfig?.profilePhotos || [];
+
+    const photoPath = isExisting ? homePhotos[index] : `photos/profile-${Date.now()}-${index}.jpg`;
+    const isSelected = selectedPhotos.includes(photoPath);
+
+    if (isSelected) {
+        // Deselect
+        selectedPhotos = selectedPhotos.filter(p => p !== photoPath);
+    } else {
+        // Select (max 2)
+        if (selectedPhotos.length >= 2) {
+            alert('You can only select 2 profile photos. Deselect one first.');
+            return;
+        }
+        selectedPhotos.push(photoPath);
+    }
+
+    // Update config
+    if (!homeConfig.selectedProfilePhotos) {
+        homeConfig.selectedProfilePhotos = [];
+    }
+    homeConfig.selectedProfilePhotos = selectedPhotos;
+
+    displayHomePhotoGrid();
+}
+
+// Delete home photo
+function deleteHomePhoto(index, isExisting) {
+    if (!confirm('Are you sure you want to delete this photo?')) {
+        return;
+    }
+
+    if (isExisting) {
+        const photoPath = homePhotos[index];
+        homePhotosToDelete.push(photoPath);
+        homePhotos.splice(index, 1);
+
+        // Remove from selected if it was selected
+        if (homeConfig.selectedProfilePhotos) {
+            homeConfig.selectedProfilePhotos = homeConfig.selectedProfilePhotos.filter(p => p !== photoPath);
+        }
+    } else {
+        const newIndex = index - homePhotos.length;
+        newHomePhotos.splice(newIndex, 1);
+    }
+
+    displayHomePhotoGrid();
+}
+
+// Handle photo file selection
+document.addEventListener('DOMContentLoaded', () => {
+    const photoInput = document.getElementById('home-photo-files');
+    if (photoInput) {
+        photoInput.addEventListener('change', function() {
+            const files = Array.from(this.files);
+            newHomePhotos.push(...files);
+            displayHomePhotoGrid();
+            this.value = ''; // Reset input
+        });
+    }
+
+    // Setup drag-and-drop for home photos
+    const dropZone = document.getElementById('home-photo-drop-zone');
+    if (dropZone) {
+        dropZone.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            // Only remove highlight if leaving the drop zone entirely
+            if (e.target === dropZone) {
+                dropZone.classList.remove('drag-over');
+            }
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+
+            const files = Array.from(e.dataTransfer.files).filter(file =>
+                file.type.startsWith('image/')
+            );
+
+            if (files.length > 0) {
+                newHomePhotos.push(...files);
+                displayHomePhotoGrid();
+            }
+        });
+
+        // Make the entire drop zone clickable to open file picker
+        dropZone.addEventListener('click', (e) => {
+            // Don't trigger if clicking the button
+            if (!e.target.classList.contains('browse-btn')) {
+                document.getElementById('home-photo-files').click();
+            }
+        });
+    }
+});
+
+// Handle home form submission
+document.addEventListener('DOMContentLoaded', () => {
+    const homeForm = document.getElementById('home-form');
+    if (homeForm) {
+        homeForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const updatedConfig = {
+                allProfilePhotos: homePhotos, // All photos in collection
+                selectedProfilePhotos: homeConfig?.selectedProfilePhotos || [],
+                tagline: document.getElementById('home-tagline').value.trim(),
+                about: document.getElementById('home-about').value.trim(),
+                professionalBackground: {
+                    current: document.getElementById('home-current').value.trim(),
+                    education: document.getElementById('home-education').value.trim(),
+                    specialties: document.getElementById('home-specialties').value.trim(),
+                    technologies: document.getElementById('home-technologies').value.trim()
+                },
+                contact: {
+                    email: document.getElementById('home-email').value.trim(),
+                    phone: document.getElementById('home-phone').value.trim(),
+                    location: document.getElementById('home-location').value.trim()
+                }
+            };
+
+            try {
+                await saveHomeConfig(updatedConfig, newHomePhotos, homePhotosToDelete);
+                alert('Home page updated successfully!');
+                // Reload to show new photos
+                await loadHomeConfig();
+            } catch (error) {
+                alert('Error saving home page: ' + error.message);
+            }
+        });
+    }
+});
+
+// Save home config to GitHub
+async function saveHomeConfig(config, newPhotos = [], photosToDelete = []) {
+    if (!githubToken) {
+        throw new Error('Please save your GitHub token first');
+    }
+
+    loadGitHubConfig();
+    showProgress('Saving home page...', 0);
+
+    try {
+        // Get current branch reference
+        showProgress('Getting repository info...', 10);
+        const refData = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/refs/heads/${githubConfig.branch}`);
+        const latestCommitSha = refData.object.sha;
+
+        // Get the current commit
+        showProgress('Reading current commit...', 20);
+        const commitData = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/commits/${latestCommitSha}`);
+        const treeSha = commitData.tree.sha;
+
+        const treeItems = [];
+
+        // Upload new photos if provided
+        if (newPhotos.length > 0) {
+            showProgress('Uploading new photos...', 30);
+
+            for (let i = 0; i < newPhotos.length; i++) {
+                const photo = newPhotos[i];
+                const timestamp = Date.now();
+                const photoPath = `photos/profile-${timestamp}-${i}.jpg`;
+
+                // Read photo as base64
+                const photoBase64 = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+                    reader.readAsDataURL(photo);
+                });
+
+                // Create blob for photo
+                const photoBlob = await createBlob(photoBase64);
+
+                treeItems.push({
+                    path: photoPath,
+                    sha: photoBlob.sha,
+                    mode: '100644',
+                    type: 'blob'
+                });
+
+                // Add new photo path to config
+                config.allProfilePhotos.push(photoPath);
+            }
+        }
+
+        // Handle deleted photos (mark them as deleted in tree)
+        if (photosToDelete.length > 0) {
+            showProgress('Removing deleted photos...', 50);
+            photosToDelete.forEach(photoPath => {
+                treeItems.push({
+                    path: photoPath,
+                    sha: null, // null sha means delete
+                    mode: '100644',
+                    type: 'blob'
+                });
+            });
+        }
+
+        // Create blob for home-config.json
+        showProgress('Uploading configuration...', 60);
+        const configContent = JSON.stringify(config, null, 2);
+        const configBase64 = btoa(unescape(encodeURIComponent(configContent)));
+        const configBlob = await createBlob(configBase64);
+
+        treeItems.push({
+            path: 'home-config.json',
+            sha: configBlob.sha,
+            mode: '100644',
+            type: 'blob'
+        });
+
+        // Create new tree
+        showProgress('Creating file tree...', 70);
+        const newTree = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/trees`, {
+            method: 'POST',
+            body: JSON.stringify({
+                base_tree: treeSha,
+                tree: treeItems
+            })
+        });
+
+        // Create new commit
+        showProgress('Creating commit...', 85);
+        const newCommit = await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/commits`, {
+            method: 'POST',
+            body: JSON.stringify({
+                message: 'Update home page configuration and photos',
+                tree: newTree.sha,
+                parents: [latestCommitSha]
+            })
+        });
+
+        // Update branch reference
+        showProgress('Pushing to GitHub...', 95);
+        await githubAPI(`/repos/${githubConfig.owner}/${githubConfig.repo}/git/refs/heads/${githubConfig.branch}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                sha: newCommit.sha
+            })
+        });
+
+        showProgress('Complete!', 100);
+        homeConfig = config;
         setTimeout(() => hideProgress(), 1000);
 
     } catch (error) {

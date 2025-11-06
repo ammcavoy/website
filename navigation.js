@@ -23,6 +23,13 @@ function getCurrentPage() {
     if (page === '' || page === 'index') {
         return 'home';
     }
+
+    // If we're on content.html, get tab from URL parameter
+    if (page === 'content') {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('tab') || 'content';
+    }
+
     return page;
 }
 
@@ -77,7 +84,8 @@ function renderNavigation(config, currentPage) {
 
         const li = document.createElement('li');
         const a = document.createElement('a');
-        a.href = `${tab.id}.html`;
+        // Route all tabs through content.html with tab parameter
+        a.href = `content.html?tab=${tab.id}`;
         a.textContent = tab.label;
 
         if (currentPage === tab.id) {
@@ -125,7 +133,7 @@ function renderSubtypeNavigation(tab, activeSubtype) {
     // Add "All" option
     const allLi = document.createElement('li');
     const allLink = document.createElement('a');
-    allLink.href = `${tab.id}.html`;
+    allLink.href = `content.html?tab=${tab.id}`;
     allLink.textContent = 'All';
     if (!activeSubtype) {
         allLink.classList.add('active');
@@ -137,7 +145,7 @@ function renderSubtypeNavigation(tab, activeSubtype) {
     tab.subtypes.forEach(subtype => {
         const li = document.createElement('li');
         const a = document.createElement('a');
-        a.href = `${tab.id}.html?subtype=${subtype.id}`;
+        a.href = `content.html?tab=${tab.id}&subtype=${subtype.id}`;
         a.innerHTML = `${subtype.icon || ''} ${subtype.label}`;
 
         if (activeSubtype === subtype.id) {

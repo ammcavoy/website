@@ -249,6 +249,8 @@ body {
     color: #666;
 }
 
+/* Generic content grid - works for all tabs */
+.content-grid,
 .adventures-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -256,6 +258,8 @@ body {
     margin-top: 2rem;
 }
 
+/* Generic content card - works for all tabs */
+.content-card,
 .adventure-card {
     background-color: var(--white);
     border-radius: 8px;
@@ -265,6 +269,7 @@ body {
     cursor: pointer;
 }
 
+.content-card:hover,
 .adventure-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 12px rgba(0,0,0,0.15);

@@ -4,6 +4,7 @@
       "id": "adventures",
       "label": "Adventures",
       "dataFile": "adventures/adventures.json",
+      "dataKey": "adventures",
       "enabled": true,
       "subtypes": [
         {

@@ -607,110 +607,13 @@
             <div id="token-status" class="token-status"></div>
         </div>
 
-        <div class="admin-tabs">
+        <div class="admin-tabs" id="admin-tab-buttons">
+            <button class="admin-tab-btn" onclick="switchAdminTab('home')">Edit Home Page</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('tabs')">Manage Tabs</button>
-            <button class="admin-tab-btn active" onclick="switchAdminTab('adventure')">Manage Adventures</button>
+            <!-- Dynamic tab admin buttons will be inserted here by admin-dynamic.js -->
         </div>
 
-        <div id="admin-adventure-section" class="admin-section" style="display: block;">
-            <h2>Adventure Management</h2>
-
-        <div class="instructions">
-            <h3>How to Add an Adventure</h3>
-            <ol>
-                <li>Set up your GitHub token above (one-time setup)</li>
-                <li>Fill out all the fields below with your adventure details</li>
-                <li>Upload photos and select a cover photo</li>
-                <li>(Optional) Upload GPX files from onX for route mapping</li>
-                <li>Click "Upload Adventure to GitHub" - everything will be committed automatically!</li>
-            </ol>
-        </div>
-
-        <div class="edit-mode-selector">
-            <button type="button" class="mode-btn active" onclick="switchMode('create')">Create New</button>
-            <button type="button" class="mode-btn" onclick="switchMode('edit')">Edit Existing</button>
-        </div>
-
-        <div id="edit-adventure-selector" style="display: none;">
-            <div class="form-group">
-                <label for="existing-adventures">Select Adventure to Edit</label>
-                <select id="existing-adventures" onchange="loadAdventureForEdit()">
-                    <option value="">-- Choose an adventure --</option>
-                </select>
-            </div>
-        </div>
-
-        <form id="adventure-form">
-            <div class="form-group">
-                <label for="adventure-id">Adventure ID *</label>
-                <input type="text" id="adventure-id" placeholder="e.g., grays-peak-2024" required>
-                <small>Use lowercase letters, numbers, and hyphens only</small>
-            </div>
-
-            <div class="form-group">
-                <label for="adventure-title">Title *</label>
-                <input type="text" id="adventure-title" placeholder="e.g., Grays Peak Summit" required>
-            </div>
-
-            <div class="form-group">
-                <label>Categories * <small>(Select at least one)</small></label>
-                <div id="adventure-categories" class="category-checkboxes">
-                    <!-- Checkboxes loaded dynamically from tabs-config.json -->
-                </div>
-            </div>
-
-            <div class="form-group" id="single-date-group">
-                <label for="adventure-date">Date *</label>
-                <input type="date" id="adventure-date">
-            </div>
-
-            <div class="form-group" id="date-range-group" style="display: none;">
-                <label for="adventure-start-date">Start Date *</label>
-                <input type="date" id="adventure-start-date">
-                <label for="adventure-end-date" style="margin-top: 0.5rem;">End Date *</label>
-                <input type="date" id="adventure-end-date">
-            </div>
-
-            <div class="form-group">
-                <label for="adventure-description">Description *</label>
-                <textarea id="adventure-description" placeholder="Write about your adventure..." required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="gpx-files">GPX Files <small>(optional)</small></label>
-                <div id="existing-gpx-list" style="margin-bottom: 1rem; display: none;">
-                    <div style="font-weight: 500; margin-bottom: 0.5rem;">Current GPX Files:</div>
-                    <div id="gpx-files-container"></div>
-                </div>
-                <input type="file" id="gpx-files" accept=".gpx" multiple>
-                <small>Upload one or more GPX files (routes and waypoints will be auto-detected)</small>
-            </div>
-
-            <div class="form-group">
-                <label for="photo-files">Photos <span id="photos-optional">(add more photos or leave empty)</span></label>
-                <input type="file" id="photo-files" accept="image/*" multiple>
-                <div id="photo-preview" class="photo-grid"></div>
-            </div>
-
-            <div class="form-group" id="cover-photo-group" style="display: none;">
-                <label>Select Cover Photo (click on image)</label>
-                <div id="cover-photo-selector" class="cover-photo-grid"></div>
-            </div>
-
-            <button type="submit" class="submit-btn">Upload Adventure to GitHub</button>
-        </form>
-
-        <div id="output-section" class="output-section">
-            <h3>Adventure Uploaded Successfully!</h3>
-            <p>Your adventure has been committed to GitHub and will be visible on your website shortly.</p>
-
-            <h4>Adventure Details</h4>
-            <pre id="json-output"></pre>
-
-            <h4>View on GitHub</h4>
-            <p id="github-link"></p>
-        </div>
-        </div>
+        <!-- Old hardcoded adventure admin section removed - now dynamically generated by admin-dynamic.js -->
 
         <!-- Tab Management Section -->
         <div id="admin-tabs-section" class="admin-section" style="display: none;">
@@ -759,6 +662,88 @@
                 </div>
             </div>
         </div>
+
+        <!-- Home Page Editing Section -->
+        <div id="admin-home-section" class="admin-section" style="display: none;">
+            <h2>Edit Home Page</h2>
+            <p>Update the text content on your home page.</p>
+
+            <form id="home-form">
+                <h3>Profile Photos</h3>
+                <div class="form-group">
+                    <label for="home-photo-files">Upload New Profile Photos</label>
+                    <div id="home-photo-drop-zone" class="photo-drop-zone">
+                        <input type="file" id="home-photo-files" accept="image/*" multiple style="display: none;">
+                        <p>Drag photos here or <button type="button" class="browse-btn" onclick="document.getElementById('home-photo-files').click()">Browse Files</button></p>
+                    </div>
+                    <small>Upload additional photos to your collection</small>
+                </div>
+
+                <div id="home-photos-section" style="margin-top: 1rem;">
+                    <label>Profile Photo Collection (Select 2 photos to display on home page):</label>
+                    <div id="home-photo-grid" class="photo-grid"></div>
+                </div>
+
+                <h3>Text Content</h3>
+                <div class="form-group">
+                    <label for="home-tagline">Tagline *</label>
+                    <input type="text" id="home-tagline" placeholder="e.g., Software Engineer | Outdoor Adventurer | Explorer" required>
+                    <small>Appears below your name on the home page</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="home-about">About Section *</label>
+                    <textarea id="home-about" rows="6" required></textarea>
+                    <small>Main about text that appears on the home page</small>
+                </div>
+
+                <h3>Professional Background</h3>
+
+                <div class="form-group">
+                    <label for="home-current">Current Position *</label>
+                    <input type="text" id="home-current" placeholder="e.g., Software Engineer at Company (Location)" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="home-education">Education *</label>
+                    <input type="text" id="home-education" placeholder="e.g., Computer Engineering & Computer Science, University" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="home-specialties">Specialties *</label>
+                    <input type="text" id="home-specialties" placeholder="e.g., Java, Distributed Systems, API Integration" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="home-technologies">Technologies *</label>
+                    <input type="text" id="home-technologies" placeholder="e.g., Spring, React, PostgreSQL, AWS, Linux" required>
+                </div>
+
+                <h3>Contact Information</h3>
+
+                <div class="form-group">
+                    <label for="home-email">Email *</label>
+                    <input type="email" id="home-email" placeholder="e.g., your@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="home-phone">Phone *</label>
+                    <input type="tel" id="home-phone" placeholder="e.g., (123) 456-7890" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="home-location">Location *</label>
+                    <input type="text" id="home-location" placeholder="e.g., City, State" required>
+                </div>
+
+                <button type="submit" class="submit-btn">Save Home Page Changes</button>
+            </form>
+        </div>
+
+        <!-- Container for dynamically generated admin sections -->
+        <div id="admin-sections-container">
+            <!-- Dynamic admin sections will be inserted here by admin-dynamic.js -->
+        </div>
     </div>
 
     <div id="progress-overlay" class="progress-overlay">
@@ -772,5 +757,7 @@
     </div>
 
     <script src="admin.js"></script>
+    <script src="content-manager.js"></script>
+    <script src="admin-dynamic.js"></script>
 </body>
 </html>

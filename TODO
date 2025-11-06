@@ -1,14 +1,15 @@
 WEBSITE
 figure out what needs to be cleaned up
+ - MAKE THE ADMIN PAGE PASSWORD RESTRICTED
  - The profile pictures display
- - Make the home / adventure tab selects change color based on location in the site.
- - get HTTPS working for the site
+ - make date vs. date range a selectable option for a subtype in tab management.
+ - make a tabs fields more selectable and mutatable (hide show) - show cover photo, use gpx, short and or long description, etc.
+ - move professional exp to new tab
+ - woodworking, projects, blog, etc - other tab ideas
+ - populate more GPX for ski posts
+ - Add linked in and github to contact me / get to know me
+   - make the get to know me more customizable in admin page.
  Adventure tab
- - Make the adventure type multi select
- - Add the ability to link and maybe even view youtube videos in the site.
- - Add 14er, backpacking, and race to the adventure type
- - Make adventure tab cover photo with the ability to select what adventure type to scroll
- - figure out the lag when closing the big view picture
  - Need to add top to the map
  - Add elevation map for the routes in display
  - Make the map scrolling a "cmd" scroll - its annoying to scroll past it.

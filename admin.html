@@ -561,6 +561,42 @@
             }
         }
 
+        /* Photo Drop Zone */
+        .photo-drop-zone {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .photo-drop-zone:hover,
+        .photo-drop-zone.drag-over {
+            border-color: var(--primary-color);
+            background-color: #f0f8f5;
+        }
+
+        .photo-drop-zone p {
+            margin: 0;
+            color: #666;
+        }
+
+        .browse-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0;
+        }
+
+        .browse-btn:hover {
+            color: var(--secondary-color);
+        }
+
         /* Category Checkboxes */
         .category-checkboxes {
             display: grid;
@@ -689,7 +725,10 @@
 
             <div class="form-group">
                 <label for="photo-files">Photos <span id="photos-optional">(add more photos or leave empty)</span></label>
-                <input type="file" id="photo-files" accept="image/*" multiple>
+                <div id="adventure-photo-drop-zone" class="photo-drop-zone">
+                    <input type="file" id="photo-files" accept="image/*" multiple style="display: none;">
+                    <p>Drag photos here or <button type="button" class="browse-btn" onclick="document.getElementById('photo-files').click()">Browse Files</button></p>
+                </div>
                 <div id="photo-preview" class="photo-grid"></div>
             </div>
 
@@ -776,7 +815,10 @@
                 <h3>Profile Photos</h3>
                 <div class="form-group">
                     <label for="home-photo-files">Upload New Profile Photos</label>
-                    <input type="file" id="home-photo-files" accept="image/*" multiple>
+                    <div id="home-photo-drop-zone" class="photo-drop-zone">
+                        <input type="file" id="home-photo-files" accept="image/*" multiple style="display: none;">
+                        <p>Drag photos here or <button type="button" class="browse-btn" onclick="document.getElementById('home-photo-files').click()">Browse Files</button></p>
+                    </div>
                     <small>Upload additional photos to your collection</small>
                 </div>
 

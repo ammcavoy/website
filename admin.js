@@ -380,6 +380,49 @@ document.getElementById('photo-files').addEventListener('change', function(e) {
     displayPhotoGrid();
 });
 
+// Setup drag-and-drop for adventure photos
+document.addEventListener('DOMContentLoaded', () => {
+    const adventureDropZone = document.getElementById('adventure-photo-drop-zone');
+    if (adventureDropZone) {
+        adventureDropZone.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            adventureDropZone.classList.add('drag-over');
+        });
+
+        adventureDropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        });
+
+        adventureDropZone.addEventListener('dragleave', (e) => {
+            if (e.target === adventureDropZone) {
+                adventureDropZone.classList.remove('drag-over');
+            }
+        });
+
+        adventureDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            adventureDropZone.classList.remove('drag-over');
+
+            const files = Array.from(e.dataTransfer.files).filter(file =>
+                file.type.startsWith('image/')
+            );
+
+            if (files.length > 0) {
+                selectedPhotos = [...selectedPhotos, ...files];
+                displayPhotoGrid();
+            }
+        });
+
+        // Make the entire drop zone clickable
+        adventureDropZone.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('browse-btn')) {
+                document.getElementById('photo-files').click();
+            }
+        });
+    }
+});
+
 // Display photo grid with click-to-select cover
 function displayPhotoGrid() {
     const preview = document.getElementById('photo-preview');
@@ -1307,6 +1350,49 @@ document.addEventListener('DOMContentLoaded', () => {
             newHomePhotos.push(...files);
             displayHomePhotoGrid();
             this.value = ''; // Reset input
+        });
+    }
+
+    // Setup drag-and-drop for home photos
+    const dropZone = document.getElementById('home-photo-drop-zone');
+    if (dropZone) {
+        dropZone.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            // Only remove highlight if leaving the drop zone entirely
+            if (e.target === dropZone) {
+                dropZone.classList.remove('drag-over');
+            }
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+
+            const files = Array.from(e.dataTransfer.files).filter(file =>
+                file.type.startsWith('image/')
+            );
+
+            if (files.length > 0) {
+                newHomePhotos.push(...files);
+                displayHomePhotoGrid();
+            }
+        });
+
+        // Make the entire drop zone clickable to open file picker
+        dropZone.addEventListener('click', (e) => {
+            // Don't trigger if clicking the button
+            if (!e.target.classList.contains('browse-btn')) {
+                document.getElementById('home-photo-files').click();
+            }
         });
     }
 });

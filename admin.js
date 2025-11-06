@@ -529,8 +529,6 @@ document.getElementById('adventure-form').addEventListener('submit', async funct
         id: id,
         title: title,
         categories: categories,
-        // Keep 'category' for backward compatibility (use first selected category)
-        category: categories[0],
         ...dateData,
         description: description,
         coverPhoto: null, // Will be set after determining photo paths

@@ -3,7 +3,9 @@
     {
       "id": "indian-peaks2025",
       "title": "Indian Peaks Wilderness",
-      "category": "camping",
+      "categories": [
+        "camping"
+      ],
       "startDate": "2025-09-12",
       "endDate": "2025-09-14",
       "description": "test upload",
@@ -44,7 +46,9 @@
     {
       "id": "14er-antero",
       "title": "Mount Antero",
-      "category": "day-hikes",
+      "categories": [
+        "day-hikes"
+      ],
       "date": "2025-09-01",
       "description": "Did some car camping, saw a pretty sun rise, and most importantly enjoyed a cig at the summit. God bless.",
       "coverPhoto": "adventures/14er-antero/cover.jpeg",
@@ -66,7 +70,9 @@
     {
       "id": "imogene-pass2025",
       "title": "Imogene Pass Race",
-      "category": "day-hikes",
+      "categories": [
+        "day-hikes"
+      ],
       "date": "2025-09-06",
       "description": "One of the toughest things I've ever done. Really pretty place to be, running uphill somehow made it more beautiful.",
       "coverPhoto": "adventures/imogene-pass2025/cover.jpeg",
@@ -92,7 +98,9 @@
     {
       "id": "decalibron14ers2025",
       "title": "DeCaLiBron Loop",
-      "category": "day-hikes",
+      "categories": [
+        "day-hikes"
+      ],
       "date": "2025-06-14",
       "description": "Slept in the car with the lovely lad Zach. Woke up and went up, had the honor of summiting 4 14ers in a single day. Lovely making it to the top of Lincoln after the attempt on skis in the spring. Got to see a little goat and some lovely snow covered ridge lines. Overall a nice hike with lovely views.",
       "coverPhoto": "adventures/decalibron14ers2025/cover.jpeg",
@@ -120,7 +128,6 @@
         "day-hikes",
         "14ers"
       ],
-      "category": "day-hikes",
       "date": "2025-08-09",
       "description": "Slept in the car with Maria, a truly lovely experience as always. Woke up at went up. Saw some good flowers and good dogs throughout the hike. This one was a fast one for sure. Overall a great 14er.",
       "coverPhoto": "adventures/massive14er2025/cover.jpeg",
@@ -144,7 +151,9 @@
     {
       "id": "sherman14er2025",
       "title": "Mount Sherman",
-      "category": "day-hikes",
+      "categories": [
+        "day-hikes"
+      ],
       "date": "2025-05-24",
       "description": "Went camping (on the ground instead of in the car) with Maria, Marissa, and several other lads. Slept in a little because if was close and not too long of a hike. Had a fun time hiking up, and slid down on our butts for parts of the downhill. Almost as fun as skiing.",
       "coverPhoto": "adventures/sherman14er2025/cover.jpeg",
@@ -167,7 +176,9 @@
     {
       "id": "lincoln-ski-14er2025",
       "title": "Mount Lincoln",
-      "category": "backcountry-lines",
+      "categories": [
+        "backcountry-lines"
+      ],
       "date": "2025-04-26",
       "description": "Maria and I slept in the car and rose with the sun. Had a lovely first couple miles of the accent getting to watch the sun rise while in the clouds was beautiful. We got a little lost on the way up and ended up losing a lot of time climbing over rocks. We were hours behind schedule and exhausted and turned around early. The ski down was a silly ski with several rock band crossings. Always sad turning around before reaching the goal, but a really fun day in the mountains with Maria regardless.",
       "coverPhoto": "adventures/lincoln-ski-14er2025/cover.jpeg",
@@ -190,7 +201,9 @@
     {
       "id": "moab-climbing2025",
       "title": "Exploring Moab",
-      "category": "camping",
+      "categories": [
+        "camping"
+      ],
       "startDate": "2025-04-11",
       "endDate": "2025-04-13",
       "description": "Went Car Camping in Moab. The site was too close to a busy road which was a shame, but holy cow was it beautiful. Got to climb up some red rocks and see some beautiful views.",
@@ -235,7 +248,6 @@
         "backcountry-lines",
         "hut-trips"
       ],
-      "category": "backcountry-lines",
       "startDate": "2025-01-06",
       "endDate": "2025-01-08",
       "description": "A truly incredible hut. The tour in was a lovely snowmobile ride for the first couple miles, and the last mile was an uphill battle from hell with the sled. That last mile is truly something I would never wish upon anyone. Once we arrived we realized that we were on a hut trip in horrible avalanche conditions. We didn't get to ski any of the lines that we wanted to but enjoyed the hut and each other all the same. We drank a lot, smoked a little, and laughed a lot. A hut with incredible views is better with incredible friends.",
@@ -277,7 +289,9 @@
     {
       "id": "fourpassloop2024",
       "title": "Four Pass Loop",
-      "category": "camping",
+      "categories": [
+        "camping"
+      ],
       "startDate": "2024-09-09",
       "endDate": "2024-09-12",
       "description": "The Maroon Bells are some of the most beautiful mountains that I have gotten to enjoy out in Colorado. This three night journey was a lovely experience with Maria and Elisabeth. We met lovely people on the trail and walked away with many more blisters than we started with.",
@@ -326,7 +340,9 @@
     {
       "id": "sectionhousehut2024",
       "title": "Section House Hut",
-      "category": "hut-trips",
+      "categories": [
+        "hut-trips"
+      ],
       "startDate": "2024-04-06",
       "endDate": "2024-04-10",
       "description": "One of the best hut trips I've ever had the joy of being on. Got to ski the legendary Baldy Mountain outside of Breckenridge completing something that I've been eying up since I was a wee child. Drank a little too much and hiked a little too far, but I would do it all again in a heart beat. Huge shout out to almost everyone on this hut trip for skiing their first peaks above 13,000 ft.",
@@ -374,7 +390,6 @@
         "backcountry-lines",
         "hut-trips"
       ],
-      "category": "backcountry-lines",
       "startDate": "2024-02-17",
       "endDate": "2024-02-19",
       "description": "Easily the worst hut I have been on (Skiing wise). Snow was wind blown to hell and back and all of the lines we thought we could ski were completely bare rock, very not cash money. The hut itself was actually so incredible and I would love to stay in such a luxurious hut in the future.",
@@ -402,7 +417,9 @@
     {
       "id": "sopris2024",
       "title": "Mount Sopris Camp and Ski",
-      "category": "camping",
+      "categories": [
+        "camping"
+      ],
       "startDate": "2024-06-01",
       "endDate": "2024-06-02",
       "description": "This was one of the hardest hikes in that I have ever had to do. Skis and a tent on the back are really not that light. Tye and Pat chose to sleep on some wet mud with only a tarp coving them, it was essentially like sleeping in a class 3 river. We also may have forgot to set alarms when we got to camp and slept in a little resulting in us having to turn around early. Overall this wasn't a great success, but it was so much fun making some stupid memories with friends.",

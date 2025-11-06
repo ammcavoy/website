@@ -41,11 +41,15 @@ function displayAdventures() {
     let filteredAdventures = adventuresData;
     if (activeSubtypeFilter) {
         filteredAdventures = adventuresData.filter(adv => {
-            // Support both single category and multiple categories
+            // Check if adventure has this category
             if (Array.isArray(adv.categories)) {
                 return adv.categories.includes(activeSubtypeFilter);
             }
-            return adv.category === activeSubtypeFilter;
+            // Legacy support: convert single category to array
+            if (adv.category) {
+                return adv.category === activeSubtypeFilter;
+            }
+            return false;
         });
     }
 
@@ -106,16 +110,18 @@ function createAdventureCard(adventure, index) {
         '14ers': '14er'
     };
 
-    // Support both single category and multiple categories
-    let categoryBadgesHtml = '';
+    // Get categories (always use array)
+    let categories = [];
     if (Array.isArray(adventure.categories)) {
-        categoryBadgesHtml = adventure.categories
-            .map(cat => `<div class="adventure-category-badge">${categoryLabels[cat] || cat}</div>`)
-            .join('');
-    } else {
-        const categoryLabel = categoryLabels[adventure.category] || 'Adventure';
-        categoryBadgesHtml = `<div class="adventure-category-badge">${categoryLabel}</div>`;
+        categories = adventure.categories;
+    } else if (adventure.category) {
+        // Legacy support: convert single category to array
+        categories = [adventure.category];
     }
+
+    const categoryBadgesHtml = categories
+        .map(cat => `<div class="adventure-category-badge">${categoryLabels[cat] || cat}</div>`)
+        .join('');
 
     card.innerHTML = `
         ${mediaHtml}

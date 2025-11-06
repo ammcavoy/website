@@ -1,8 +1,24 @@
-// Admin script with GitHub API integration and edit functionality
+// ========================================
+// ADMIN SCRIPT - Modular Tab Management System
+// ========================================
+// This script manages the admin interface for a modular content management system.
+//
+// ARCHITECTURE:
+// - Modern tabs use: content.html + content-loader.js + content-manager.js + admin-dynamic.js
+// - Legacy adventures page: adventures.html + legacy-adventures.js (deprecated)
+//
+// The admin interface dynamically generates management sections for each tab type
+// defined in tabs-config.json, allowing easy addition of new content types.
+// ========================================
 
-// ===== DEPRECATED ADVENTURE-SPECIFIC VARIABLES =====
-// These are kept for backward compatibility with legacy-adventures.js
-// All new tabs use content-manager.js instead
+// ===== DEPRECATED LEGACY ADVENTURE VARIABLES =====
+// IMPORTANT: The code in this section is DEPRECATED and exists ONLY for backward
+// compatibility with the old adventures.html page and legacy-adventures.js.
+//
+// DO NOT use these variables for new features. All new tab types should use the
+// modular system (TabContentManager class in content-manager.js).
+//
+// These will be removed once adventures.html is fully migrated to content.html.
 let selectedPhotos = [];
 let existingPhotos = []; // For edit mode
 let coverPhotoIndex = 0;
@@ -12,9 +28,12 @@ let allAdventures = [];
 let existingGpxFiles = [];
 let newGpxFiles = [];
 let gpxFilesToRemove = [];
-// ===== END DEPRECATED SECTION =====
+// ===== END DEPRECATED LEGACY SECTION =====
 
-// Generic variables used by all systems
+// ========================================
+// CORE SYSTEM VARIABLES
+// ========================================
+// These variables are used by the modern modular system
 let githubToken = '';
 let githubConfig = {
     owner: '',
@@ -32,7 +51,10 @@ let homePhotos = [];
 let homePhotosToDelete = [];
 let newHomePhotos = [];
 
-// Load saved token and adventures on page load
+// ========================================
+// INITIALIZATION
+// ========================================
+// Load saved GitHub credentials and initialize the admin interface
 window.addEventListener('DOMContentLoaded', () => {
     const saved = localStorage.getItem('github-token');
     if (saved) {
@@ -48,11 +70,16 @@ window.addEventListener('DOMContentLoaded', () => {
         loadAdventuresList();
     }
 
-    // Load category options from tabs config
+    // Load category options from tabs config (for legacy adventure form)
     loadAdventureCategoryOptions();
 });
 
-// Save GitHub token
+// ========================================
+// GITHUB API INTEGRATION
+// ========================================
+// Core functions for interacting with GitHub API
+
+// Save GitHub token to localStorage
 async function saveToken() {
     const token = document.getElementById('github-token').value.trim();
 
@@ -117,12 +144,22 @@ function loadGitHubConfig() {
     }
 }
 
-// ===== DEPRECATED ADVENTURE-SPECIFIC FUNCTIONS =====
-// The following functions are DEPRECATED and only used by legacy-adventures.js
-// All new tabs use TabContentManager class in content-manager.js
-// These are kept for backward compatibility only
+// ========================================
+// DEPRECATED LEGACY ADVENTURE FUNCTIONS
+// ========================================
+// WARNING: This entire section is DEPRECATED!
+//
+// These functions exist ONLY for backward compatibility with adventures.html
+// and legacy-adventures.js. They will be removed in a future version.
+//
+// DO NOT modify or extend these functions. DO NOT use them as examples for new features.
+// All new tab types must use the modular system:
+//   - TabContentManager class (content-manager.js)
+//   - Dynamic admin sections (admin-dynamic.js)
+//   - Generic content display (content-loader.js)
+// ========================================
 
-// Switch between create and edit mode
+// DEPRECATED: Switch between create and edit mode (legacy adventures only)
 function switchMode(mode) {
     editMode = (mode === 'edit');
 
@@ -1050,11 +1087,16 @@ async function loadAdventureCategoryOptions() {
     }
 }
 
-// ===== END DEPRECATED ADVENTURE FUNCTIONS =====
+// ========================================
+// END OF DEPRECATED LEGACY SECTION
+// ========================================
 
-// ===== TAB MANAGEMENT FUNCTIONS =====
+// ========================================
+// TAB MANAGEMENT SYSTEM
+// ========================================
+// Modern modular functions for managing tabs via tabs-config.json
 
-// Switch between admin sections
+// Switch between different admin interface sections
 function switchAdminTab(tab) {
     document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.admin-section').forEach(section => section.style.display = 'none');
@@ -1370,9 +1412,12 @@ async function saveTabsConfig() {
     }
 }
 
-// ===== HOME PAGE MANAGEMENT FUNCTIONS =====
+// ========================================
+// HOME PAGE MANAGEMENT SYSTEM
+// ========================================
+// Functions for editing home page content via home-config.json
 
-// Load home page configuration
+// Load current home page configuration from JSON file
 async function loadHomeConfig() {
     try {
         const response = await fetch('home-config.json');
@@ -1413,57 +1458,124 @@ function populateHomeForm() {
 // Display home page photo grid
 function displayHomePhotoGrid() {
     const grid = document.getElementById('home-photo-grid');
+    if (!grid) {
+        console.error('home-photo-grid element not found');
+        return;
+    }
+
     grid.innerHTML = '';
 
     const allPhotos = [...homePhotos, ...newHomePhotos];
     const selectedPhotos = homeConfig?.selectedProfilePhotos || homeConfig?.profilePhotos || [];
 
+    console.log('Displaying home photo grid:', {
+        totalPhotos: allPhotos.length,
+        existingPhotos: homePhotos.length,
+        newPhotos: newHomePhotos.length,
+        selectedCount: selectedPhotos.length,
+        selectedPhotos: selectedPhotos
+    });
+
     allPhotos.forEach((photo, index) => {
         const isExisting = index < homePhotos.length;
         const photoPath = isExisting ? photo : URL.createObjectURL(photo);
-        const actualPath = isExisting ? photo : `photos/profile-${Date.now()}-${index}.jpg`;
-        const isSelected = selectedPhotos.includes(isExisting ? photo : actualPath);
+        // For existing photos, use the actual path. For new photos, use the stored path from homePhotos
+        const actualPath = isExisting ? photo : photo.tempPath || `photos/profile-${Date.now()}-${index}.jpg`;
+
+        // Store temp path on new photo objects for consistency
+        if (!isExisting && !photo.tempPath) {
+            photo.tempPath = actualPath;
+        }
+
+        const isSelected = selectedPhotos.includes(actualPath);
 
         const photoDiv = document.createElement('div');
         photoDiv.className = 'photo-item';
+        photoDiv.dataset.photoPath = actualPath; // Store for easy access
+        photoDiv.dataset.photoIndex = index;
+        photoDiv.dataset.isExisting = isExisting;
         if (isSelected) photoDiv.classList.add('selected');
 
-        photoDiv.innerHTML = `
-            <img src="${photoPath}" alt="Profile photo ${index + 1}">
-            <div class="photo-actions">
-                <button type="button" class="photo-select-btn" onclick="toggleHomePhotoSelection(${index}, ${isExisting})">
-                    ${isSelected ? 'Selected ✓' : 'Select'}
-                </button>
-                <button type="button" class="photo-delete-btn" onclick="deleteHomePhoto(${index}, ${isExisting})">Delete</button>
-            </div>
-        `;
+        // Create img element
+        const img = document.createElement('img');
+        img.src = photoPath;
+        img.alt = `Profile photo ${index + 1}`;
+        photoDiv.appendChild(img);
+
+        // Create delete button (red X in top right)
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'remove-btn';
+        deleteBtn.innerHTML = '&times;';
+        deleteBtn.onclick = function(e) {
+            e.stopPropagation();
+            window.deleteHomePhoto(index, isExisting);
+        };
+        photoDiv.appendChild(deleteBtn);
+
+        // Create selected badge (like COVER badge)
+        if (isSelected) {
+            const badge = document.createElement('div');
+            badge.className = 'selected-badge';
+            badge.innerHTML = '✓ SELECTED';
+            photoDiv.appendChild(badge);
+        }
+
+        // Make entire photo clickable to select/deselect
+        photoDiv.onclick = function(e) {
+            if (!e.target.classList.contains('remove-btn')) {
+                window.toggleHomePhotoSelection(index, isExisting);
+            }
+        };
+
+        console.log(`Photo ${index} created - selected: ${isSelected}`);
 
         grid.appendChild(photoDiv);
     });
 
     if (allPhotos.length === 0) {
         grid.innerHTML = '<p style="color: #999;">No photos uploaded yet. Upload photos above to get started.</p>';
+    } else {
+        console.log('Photo grid populated with', allPhotos.length, 'photos');
     }
 }
 
 // Toggle home photo selection
-function toggleHomePhotoSelection(index, isExisting) {
-    const allPhotos = [...homePhotos, ...newHomePhotos];
-    let selectedPhotos = homeConfig?.selectedProfilePhotos || homeConfig?.profilePhotos || [];
+window.toggleHomePhotoSelection = function(index, isExisting) {
+    console.log('Toggle photo selection:', { index, isExisting });
 
-    const photoPath = isExisting ? homePhotos[index] : `photos/profile-${Date.now()}-${index}.jpg`;
+    const allPhotos = [...homePhotos, ...newHomePhotos];
+    let selectedPhotos = [...(homeConfig?.selectedProfilePhotos || homeConfig?.profilePhotos || [])];
+
+    // Get the correct photo path - for new photos, use the tempPath stored on the object
+    let photoPath;
+    if (isExisting) {
+        photoPath = homePhotos[index];
+    } else {
+        const newIndex = index - homePhotos.length;
+        const photo = newHomePhotos[newIndex];
+        photoPath = photo.tempPath || `photos/profile-${Date.now()}-${newIndex}.jpg`;
+        if (!photo.tempPath) {
+            photo.tempPath = photoPath;
+        }
+    }
+
     const isSelected = selectedPhotos.includes(photoPath);
+
+    console.log('Photo selection state:', { photoPath, isSelected, currentlySelected: selectedPhotos });
 
     if (isSelected) {
         // Deselect
         selectedPhotos = selectedPhotos.filter(p => p !== photoPath);
+        console.log('Deselected photo:', photoPath);
     } else {
         // Select (max 2)
         if (selectedPhotos.length >= 2) {
-            alert('You can only select 2 profile photos. Deselect one first.');
+            alert('You can only select 2 profile photos. Deselect one of the currently selected photos first by clicking it.');
             return;
         }
         selectedPhotos.push(photoPath);
+        console.log('Selected photo:', photoPath);
     }
 
     // Update config
@@ -1472,29 +1584,37 @@ function toggleHomePhotoSelection(index, isExisting) {
     }
     homeConfig.selectedProfilePhotos = selectedPhotos;
 
+    console.log('New selection:', selectedPhotos);
     displayHomePhotoGrid();
 }
 
 // Delete home photo
-function deleteHomePhoto(index, isExisting) {
-    if (!confirm('Are you sure you want to delete this photo?')) {
+window.deleteHomePhoto = function(index, isExisting) {
+    console.log('Delete photo clicked:', { index, isExisting });
+
+    if (!confirm('Are you sure you want to delete this photo from your collection? It will be removed when you save.')) {
+        console.log('Delete cancelled by user');
         return;
     }
 
     if (isExisting) {
         const photoPath = homePhotos[index];
+        console.log('Deleting existing photo:', photoPath);
         homePhotosToDelete.push(photoPath);
         homePhotos.splice(index, 1);
 
         // Remove from selected if it was selected
         if (homeConfig.selectedProfilePhotos) {
             homeConfig.selectedProfilePhotos = homeConfig.selectedProfilePhotos.filter(p => p !== photoPath);
+            console.log('Removed from selected photos');
         }
     } else {
         const newIndex = index - homePhotos.length;
+        console.log('Deleting new photo at index:', newIndex);
         newHomePhotos.splice(newIndex, 1);
     }
 
+    console.log('Photos remaining:', { existing: homePhotos.length, new: newHomePhotos.length });
     displayHomePhotoGrid();
 }
 
@@ -1656,6 +1776,12 @@ async function saveHomeConfig(config, newPhotos = [], photosToDelete = []) {
                     mode: '100644',
                     type: 'blob'
                 });
+
+                // Remove from config
+                config.allProfilePhotos = config.allProfilePhotos.filter(p => p !== photoPath);
+                if (config.selectedProfilePhotos) {
+                    config.selectedProfilePhotos = config.selectedProfilePhotos.filter(p => p !== photoPath);
+                }
             });
         }
 

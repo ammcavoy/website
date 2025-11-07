@@ -33,6 +33,14 @@
           "icon": ""
         }
       ]
+    },
+    {
+      "id": "projects",
+      "label": "Projects",
+      "dataFile": "projects/projects.json",
+      "enabled": true,
+      "headerText": "",
+      "subtypes": []
     }
   ]
 }

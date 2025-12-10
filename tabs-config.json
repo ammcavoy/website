@@ -38,7 +38,7 @@
       "id": "projects",
       "label": "Projects",
       "dataFile": "projects/projects.json",
-      "enabled": true,
+      "enabled": false,
       "headerText": "",
       "subtypes": []
     }

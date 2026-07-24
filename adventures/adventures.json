@@ -629,6 +629,28 @@
       "photos": [
         "adventures/2026-canyonlands-backpacking/cover.heic"
       ]
+    },
+    {
+      "id": "2026-la-plata-14er",
+      "title": "La Plata",
+      "categories": [
+        "camping",
+        "14ers"
+      ],
+      "startDate": "2026-06-12",
+      "endDate": "2026-06-13",
+      "description": "Maria and I did some dispersed camping near twin lakes just south of leadville. Woke up early and went up, a truly incredible 14er. Highly recommended.",
+      "coverPhoto": "adventures/2026-la-plata-14er/cover.jpeg",
+      "gpxFiles": [],
+      "photos": [
+        "adventures/2026-la-plata-14er/cover.jpeg",
+        "adventures/2026-la-plata-14er/photo-1.jpeg",
+        "adventures/2026-la-plata-14er/photo-2.jpeg",
+        "adventures/2026-la-plata-14er/photo-3.jpeg",
+        "adventures/2026-la-plata-14er/photo-4.jpeg",
+        "adventures/2026-la-plata-14er/photo-5.jpeg",
+        "adventures/2026-la-plata-14er/photo-6.jpeg"
+      ]
     }
   ]
 }

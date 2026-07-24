@@ -651,6 +651,30 @@
         "adventures/2026-la-plata-14er/photo-5.jpeg",
         "adventures/2026-la-plata-14er/photo-6.jpeg"
       ]
+    },
+    {
+      "id": "2026-uncompagre-14er",
+      "title": "Uncompagre Peak",
+      "categories": [
+        "camping",
+        "14ers"
+      ],
+      "startDate": "2026-07-02",
+      "endDate": "2026-07-04",
+      "description": "Maria and I drove out with the goal of hiking 2 14ers and left with only one hiked. One of the shortest 14ers I've hiked and easily one of the coolest.",
+      "coverPhoto": "adventures/2026-uncompagre-14er/cover.jpeg",
+      "gpxFiles": [],
+      "photos": [
+        "adventures/2026-uncompagre-14er/cover.jpeg",
+        "adventures/2026-uncompagre-14er/photo-1.jpeg",
+        "adventures/2026-uncompagre-14er/photo-2.jpeg",
+        "adventures/2026-uncompagre-14er/photo-3.jpeg",
+        "adventures/2026-uncompagre-14er/photo-4.jpeg",
+        "adventures/2026-uncompagre-14er/photo-5.jpeg",
+        "adventures/2026-uncompagre-14er/photo-6.jpeg",
+        "adventures/2026-uncompagre-14er/photo-7.jpeg",
+        "adventures/2026-uncompagre-14er/photo-8.jpeg"
+      ]
     }
   ]
 }

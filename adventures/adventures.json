@@ -614,6 +614,21 @@
         "adventures/democrat-ski14er2024/photo-2.heic"
       ],
       "youtubeUrl": "https://www.youtube.com/watch?v=5KoTkbCcA20&t=223s"
+    },
+    {
+      "id": "2026-canyonlands-backpacking",
+      "title": "Canyonlands Backpacking",
+      "categories": [
+        "camping"
+      ],
+      "startDate": "2026-05-16",
+      "endDate": "2026-05-18",
+      "description": "Did two nights backpacking in the Needles District of the Canyonlands. Got sand everywhere and got a speeding ticket on the drive out. Aside from the sand and ticket this was an incredible trip with the lads. I would highly recommend.",
+      "coverPhoto": "adventures/2026-canyonlands-backpacking/cover.heic",
+      "gpxFiles": [],
+      "photos": [
+        "adventures/2026-canyonlands-backpacking/cover.heic"
+      ]
     }
   ]
 }

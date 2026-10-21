@@ -700,6 +700,25 @@
         "adventures/2026-sawtooth-14ers/photo-10.jpeg",
         "adventures/2026-sawtooth-14ers/photo-11.jpeg"
       ]
+    },
+    {
+      "id": "2026-huron-peak-14ers",
+      "title": "Huron Peak",
+      "categories": [
+        "14ers"
+      ],
+      "date": "2026-10-17",
+      "description": "Did some overnight camping with the Lads Pat, Riley, Jonathon, and Alex. Jonathon slept on the ground without a tent for the love of the game. We got moving at 6am and crushed the uphill, did some running in snow on the way down and had a big ole Burger in leadville for lunch on the drive home. Good day with the lads",
+      "coverPhoto": "adventures/2026-huron-peak-14ers/cover.jpeg",
+      "gpxFiles": [],
+      "photos": [
+        "adventures/2026-huron-peak-14ers/cover.jpeg",
+        "adventures/2026-huron-peak-14ers/photo-1.jpeg",
+        "adventures/2026-huron-peak-14ers/photo-2.jpeg",
+        "adventures/2026-huron-peak-14ers/photo-3.jpeg",
+        "adventures/2026-huron-peak-14ers/photo-4.jpeg",
+        "adventures/2026-huron-peak-14ers/photo-5.jpeg"
+      ]
     }
   ]
 }

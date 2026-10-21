@@ -675,6 +675,31 @@
         "adventures/2026-uncompagre-14er/photo-7.jpeg",
         "adventures/2026-uncompagre-14er/photo-8.jpeg"
       ]
+    },
+    {
+      "id": "2026-sawtooth-14ers",
+      "title": "Sawtooth Ridge - 14er Combo",
+      "categories": [
+        "14ers"
+      ],
+      "date": "2026-08-21",
+      "description": "Did the legendary Sawtooth ridge with the good lad Zach and cousin Cole. Great getting two 14ers in one day.",
+      "coverPhoto": "adventures/2026-sawtooth-14ers/cover.jpeg",
+      "gpxFiles": [],
+      "photos": [
+        "adventures/2026-sawtooth-14ers/cover.jpeg",
+        "adventures/2026-sawtooth-14ers/photo-1.jpeg",
+        "adventures/2026-sawtooth-14ers/photo-2.jpeg",
+        "adventures/2026-sawtooth-14ers/photo-3.jpeg",
+        "adventures/2026-sawtooth-14ers/photo-4.jpeg",
+        "adventures/2026-sawtooth-14ers/photo-5.jpeg",
+        "adventures/2026-sawtooth-14ers/photo-6.jpeg",
+        "adventures/2026-sawtooth-14ers/photo-7.jpeg",
+        "adventures/2026-sawtooth-14ers/photo-8.jpeg",
+        "adventures/2026-sawtooth-14ers/photo-9.jpeg",
+        "adventures/2026-sawtooth-14ers/photo-10.jpeg",
+        "adventures/2026-sawtooth-14ers/photo-11.jpeg"
+      ]
     }
   ]
 }
